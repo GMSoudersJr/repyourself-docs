@@ -1,12 +1,12 @@
 # Rep Yourself — Project Context
 
-Rep Yourself — Armstrong Pullup Program tracker. Three independent codebases (polyrepo, not a monorepo). Android is canonical for data and logic; web is legacy.
+Rep Yourself — Armstrong Pullup Program tracker. Three independent codebases (polyrepo, not a monorepo). Android is canonical for data and logic; web is legacy. **iOS is the current active development focus** — android/ and web/ are in maintenance mode, receiving fixes as gaps surface from iOS work (see Cross-Platform Gap Notes below).
 
 ## Structure
 
-- `android/` — Kotlin/Java, built in Android Studio, Room for local storage. **Canonical reference for both business logic and data schema.**
-- `web/` — PWA, IndexedDB for local storage. **Legacy** — predates Android and is no longer the schema reference; kept only to support one-time data import into mobile apps.
-- `ios/` — Native SwiftUI app, in progress. See `ios/CLAUDE.md` before working in this folder.
+- `android/` — Kotlin/Java, built in Android Studio, Room for local storage. **Canonical reference for both business logic and data schema.** Currently maintenance-only.
+- `web/` — PWA, IndexedDB for local storage. **Legacy** — predates Android and is no longer the schema reference; kept only to support one-time data import into mobile apps. Currently maintenance-only.
+- `ios/` — Native SwiftUI app, **current active focus**. See `ios/CLAUDE.md` before working in this folder.
 
 ## Data contract
 
@@ -17,7 +17,25 @@ Rep Yourself — Armstrong Pullup Program tracker. Three independent codebases (
 
 ## Cross-directory rule
 
-Each platform folder is its own independent git repository. When working inside one platform's folder, treat the other two as read-only reference material — read them freely, don't edit them, unless explicitly asked to.
+Each platform folder is its own independent git repository. When working inside one platform's folder, treat the other two as read-only reference material — read them freely, don't edit them directly. If you notice something worth fixing there, log it instead — see Cross-Platform Gap Notes below.
+
+## Cross-Platform Gap Notes
+
+This directory is a waypoint between platform sessions, not just a docs archive. If you're working in one platform folder and notice a gap, inconsistency, or issue in a *different* platform's folder, don't switch over and fix it there — log it here so a future session actually working in that folder picks it up.
+
+- `gaps/android.md` — gaps found in Android, logged while working elsewhere
+- `gaps/web.md` — gaps found in web, logged while working elsewhere
+- `gaps/ios.md` — gaps found in iOS, logged while working elsewhere
+
+**Starting work in a platform folder?** Check that folder's gaps file first — treat open entries as known context, not a surprise you're discovering fresh.
+
+**Entry format:**
+```
+### [Open] <short title>
+Found while: <what task/context surfaced this>
+Details: <description of the gap>
+```
+Mark `[Resolved]` rather than deleting once addressed, so there's a record of what got fixed and when.
 
 ## Git workflow (applies in every repo — android/, web/, ios/)
 
