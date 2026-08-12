@@ -9,9 +9,10 @@ Found while: porting Firebase Analytics from Android to iOS (`ios/CLAUDE.md` §9
 Details: Android only calls `setAnalyticsCollectionEnabled` from the Settings toggle's own `onCheckedChange` handler. If a user disables "Share anonymous usage data" and then force-quits/relaunches the app, the next cold start silently reverts to Firebase's default-enabled state — no code path re-applies the stored preference at launch. iOS fixed this by re-applying the persisted opt-out in `AppDelegate.application(_:didFinishLaunchingWithOptions:)` before any event can fire; Android has no equivalent fix yet. Worth confirming still reproducible and porting the same fix (re-apply the stored preference at app-start, not just from the toggle handler).
 Resolved: 2026-08-12, `android` branch `fix-analytics-optout-cold-start` (merged) — `RepYourselfApplication.onCreate()` now reads the persisted `SettingsRepository.isAnalyticsEnabled` value and re-applies it via `AnalyticsHelper.setAnalyticsCollectionEnabled` before any event can fire, matching iOS's `AppDelegate` fix. Verified via Logcat on a real cold start (force-stop + relaunch).
 
-### [Open] `onboarding_start_fresh` analytics event may log twice
+### [Resolved] `onboarding_start_fresh` analytics event may log twice
 Found while: same Firebase Analytics port as above.
 Details: iOS's port doc notes iOS deliberately logs `onboarding_start_fresh` once, calling out that this diverges from "Android's apparent double-log." This was an observation made while porting the taxonomy, not a confirmed/reproduced bug — worth verifying against Android's actual onboarding flow before treating as real, but flagging since a duplicate analytics event would skew usage metrics.
+Resolved: 2026-08-12, `android` branch `fix-onboarding-start-fresh-double-log` (merged) — confirmed real: `OnboardingViewModel.createNewUserProfile()` logged the event twice per call (once unconditionally at the start, once after save with `RESULT: SUCCESS`). Removed the first, unconditional log; now logs once, only after the profile save succeeds, matching iOS.
 
 ### [Resolved] `program_reset_failed` sends a raw, unsanitized exception message to analytics
 Found while: same Firebase Analytics port as above.
