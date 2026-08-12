@@ -12,9 +12,10 @@ Details: Android only calls `setAnalyticsCollectionEnabled` from the Settings to
 Found while: same Firebase Analytics port as above.
 Details: iOS's port doc notes iOS deliberately logs `onboarding_start_fresh` once, calling out that this diverges from "Android's apparent double-log." This was an observation made while porting the taxonomy, not a confirmed/reproduced bug — worth verifying against Android's actual onboarding flow before treating as real, but flagging since a duplicate analytics event would skew usage metrics.
 
-### [Open] `program_reset_failed` sends a raw, unsanitized exception message to analytics
+### [Resolved] `program_reset_failed` sends a raw, unsanitized exception message to analytics
 Found while: same Firebase Analytics port as above.
 Details: Android's `program_reset_failed` event's `error_message` param sends the raw exception message text. iOS deliberately uses a coarse error type name instead (`String(describing: type(of: error))`) rather than the raw message. Both apps' privacy policies (`repyourself.app/privacy`) promise only anonymous, non-personal diagnostic data — a raw exception message is more likely than a type name to incidentally include something that isn't purely anonymous (e.g. a file path or other contextual string). Worth reviewing whether Android's raw message ever contains anything beyond a generic error description, and whether to match iOS's coarser approach.
+Resolved: 2026-08-12, `android` branch `fix-program-reset-failed-analytics-privacy` — `SettingsViewModel.kt` now sends `e::class.java.simpleName` instead of `e.message`, matching iOS's coarse-type approach.
 
 ### [Open] No Play Store Support URL exists yet
 Found while: building out iOS's App Store Connect listing checklist this session (2026-08-11/12, see `ios/AppStoreListing.md` and `ios/CLAUDE.md` §9).
