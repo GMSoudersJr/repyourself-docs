@@ -4,9 +4,10 @@ Gaps, inconsistencies, or issues found in `android/` while working in a differen
 
 ---
 
-### [Open] Analytics opt-out doesn't apply until the toggle fires again, not on cold start
+### [Resolved] Analytics opt-out doesn't apply until the toggle fires again, not on cold start
 Found while: porting Firebase Analytics from Android to iOS (`ios/CLAUDE.md` §9, `add-firebase-analytics`, PR #30).
 Details: Android only calls `setAnalyticsCollectionEnabled` from the Settings toggle's own `onCheckedChange` handler. If a user disables "Share anonymous usage data" and then force-quits/relaunches the app, the next cold start silently reverts to Firebase's default-enabled state — no code path re-applies the stored preference at launch. iOS fixed this by re-applying the persisted opt-out in `AppDelegate.application(_:didFinishLaunchingWithOptions:)` before any event can fire; Android has no equivalent fix yet. Worth confirming still reproducible and porting the same fix (re-apply the stored preference at app-start, not just from the toggle handler).
+Resolved: 2026-08-12, `android` branch `fix-analytics-optout-cold-start` (merged) — `RepYourselfApplication.onCreate()` now reads the persisted `SettingsRepository.isAnalyticsEnabled` value and re-applies it via `AnalyticsHelper.setAnalyticsCollectionEnabled` before any event can fire, matching iOS's `AppDelegate` fix. Verified via Logcat on a real cold start (force-stop + relaunch).
 
 ### [Open] `onboarding_start_fresh` analytics event may log twice
 Found while: same Firebase Analytics port as above.
