@@ -4,6 +4,16 @@ Gaps, inconsistencies, or issues found in `android/` while working in a differen
 
 ---
 
+### [Open] Dashboard settings entry point: match iOS's gear icon + move Privacy Policy link into Settings
+Found while: Gerald reviewing iOS's Settings entry point during a UI polish session (2026-08-17) — decided he likes it enough to want Android's dashboard to follow the same pattern (this is a deliberate preference, not a bug).
+Details: iOS's `DashboardView` (`ios/RepYourself/RepYourself/Views/DashboardView.swift:88-95`) puts a single persistent `gearshape` SF Symbol in the navigation toolbar, which presents `SettingsView` as a sheet; that sheet's own "Privacy" section (`SettingsView.swift:48-52`) contains the Privacy Policy `Link` (`https://repyourself.app/privacy`).
+
+Android's current dashboard (`android/app/src/main/java/com/example/repyourself/ui/dashboard/DashboardScreen.kt:448-471`) instead uses a three-dot `Icons.Default.MoreVert` overflow-menu `IconButton` inside the overview card, whose dropdown has two separate top-level items: "Settings" (`onNavigateToSettings()`) and "Privacy Policy" (opens `privacyPolicyUrl` directly via an intent, bypassing the Settings screen entirely).
+
+Requested change for whenever Android work resumes: replace the `MoreVert` overflow icon with a persistent gear icon (mirroring iOS's toolbar placement/affordance, translated to Material/Android conventions rather than a literal SF Symbol copy — this repo's cross-platform rule is behavior parity, not pixel parity), and move the Privacy Policy link out of the top-level overflow menu into the Settings screen itself, alongside/near Android's own privacy-related settings (e.g. the "Share anonymous usage data" toggle), matching iOS's grouping.
+
+---
+
 ### [Resolved] Analytics opt-out doesn't apply until the toggle fires again, not on cold start
 Found while: porting Firebase Analytics from Android to iOS (`ios/CLAUDE.md` §9, `add-firebase-analytics`, PR #30).
 Details: Android only calls `setAnalyticsCollectionEnabled` from the Settings toggle's own `onCheckedChange` handler. If a user disables "Share anonymous usage data" and then force-quits/relaunches the app, the next cold start silently reverts to Firebase's default-enabled state — no code path re-applies the stored preference at launch. iOS fixed this by re-applying the persisted opt-out in `AppDelegate.application(_:didFinishLaunchingWithOptions:)` before any event can fire; Android has no equivalent fix yet. Worth confirming still reproducible and porting the same fix (re-apply the stored preference at app-start, not just from the toggle handler).
