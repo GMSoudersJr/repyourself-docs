@@ -4,6 +4,12 @@ Gaps, inconsistencies, or issues found in `web/` while working in a different pl
 
 ---
 
+### [Open] `/privacy` page is not responsive — doesn't fit mobile screens
+Found while: Gerald reported it directly (2026-08-17), right after Android's dashboard gear-icon/Privacy Policy work (see `gaps/android.md`'s now-resolved "Dashboard settings entry point" entry) — that work makes both Android's and iOS's Settings screens link out to this same page (`https://repyourself.app/privacy`), so a mobile-unfriendly page is now reachable from both native apps' primary Settings flow, not just desktop web.
+Details: not yet diagnosed — flagging as reported. The page (`src/app/(privacy)/privacy/page.tsx` + `src/components/privacy/PrivacyPolicy.tsx`/`.module.css`, per the `/support` entry below which mirrors this route's structure) doesn't fit on mobile screens at all. Worth checking `PrivacyPolicy.module.css` for missing responsive breakpoints/viewport handling first, and whether `/support` (built afterward, same route group) has the same problem or was built responsively from the start.
+
+---
+
 ### [Resolved] Add a `/support` page — needed as iOS's (and eventually Android's) Support URL
 Found while: closing out iOS's App Store Connect listing checklist (2026-08-11/12, see `ios/AppStoreListing.md` and `ios/CLAUDE.md` §9).
 Details: iOS's App Store listing needs a Support URL and settled on `https://repyourself.app/support`, matching how the Privacy Policy URL already lives on this same domain (Android's `DashboardScreen.kt` links to `https://repyourself.app/privacy`; see the parallel entry in `gaps/android.md` — Android has no Support URL yet either, and should point at this same page once it exists). The page doesn't exist yet — this repo is where it needs to be built. iOS's checklist can't be marked ready to submit until it's live.
