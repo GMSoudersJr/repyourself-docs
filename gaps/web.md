@@ -4,9 +4,15 @@ Gaps, inconsistencies, or issues found in `web/` while working in a different pl
 
 ---
 
-### [Open] `/privacy` page is not responsive — doesn't fit mobile screens
+### [Resolved] `/privacy` page is not responsive — doesn't fit mobile screens
 Found while: Gerald reported it directly (2026-08-17), right after Android's dashboard gear-icon/Privacy Policy work (see `gaps/android.md`'s now-resolved "Dashboard settings entry point" entry) — that work makes both Android's and iOS's Settings screens link out to this same page (`https://repyourself.app/privacy`), so a mobile-unfriendly page is now reachable from both native apps' primary Settings flow, not just desktop web.
 Details: not yet diagnosed — flagging as reported. The page (`src/app/(privacy)/privacy/page.tsx` + `src/components/privacy/PrivacyPolicy.tsx`/`.module.css`, per the `/support` entry below which mirrors this route's structure) doesn't fit on mobile screens at all. Worth checking `PrivacyPolicy.module.css` for missing responsive breakpoints/viewport handling first, and whether `/support` (built afterward, same route group) has the same problem or was built responsively from the start.
+
+Resolved: 2026-08-17, `web` branch `fix-privacy-page-mobile-overflow`. Root cause: `(privacy)/privacy/layout.module.css`'s `.main` grid uses `justify-items: center`, which sizes an unstretched grid item to its own shrink-to-fit width instead of its track width. `PrivacyPolicy.tsx` contains a long unbroken URL (`https://policies.google.com/technologies/partner-sites`) that Chromium's max-content sizing pass doesn't break even with `overflow-wrap: break-word` already set on the container — so on a 320px-wide mobile viewport the content box was forced to ~433px wide. Centered by `justify-items: center` and clipped by the global `overflow-x: hidden` on `html`/`body`, this cut text off on *both* left and right edges rather than causing a scrollbar, matching what Gerald saw.
+
+Confirmed via Playwright (iPhone SE viewport, since the Chrome extension wasn't connected this session) that `/support` shares the identical `layout.module.css` and has the same latent bug — it just never had a long enough unbroken string to trigger it (measured 304px/no-overflow before any fix).
+
+Fix: added `width: 100%;` to `.privacyPolicy` (`PrivacyPolicy.module.css`) and `.support` (`Support.module.css`), forcing both content boxes to fill their grid track regardless of content, while `max-width: 37.5rem` still caps and centers them on desktop exactly as before. Verified with Playwright at iPhone SE and 1280px desktop on both pages: zero overflowing elements post-fix, desktop centering unchanged (600px wide, centered). `npm run build` passes.
 
 ---
 
