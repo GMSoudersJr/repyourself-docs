@@ -1,0 +1,1765 @@
+# Rep Yourself — Wording Source of Truth
+#
+# Canonical reference for user-facing text shared in concept between the
+# Android (strings.xml) and iOS (Localizable.xcstrings) apps. This is NOT a
+# build input for either app — it is a human-maintained map for keeping
+# wording consistent and for future translation work. When wording changes
+# in either strings.xml or Localizable.xcstrings, update the matching entry
+# here too.
+#
+# status values:
+#   match         - text is already identical (format placeholders aside)
+#   match_wording - words match; only letter-casing differs (left alone —
+#                   casing is treated as platform visual style, not wording)
+#   fixed         - was a genuine mismatch, unified 2026-08-29 (see note)
+#   diverges      - a real difference exists and was NOT changed this pass;
+#                   see note for why (structural UX difference, uncertain
+#                   pairing, or flagged for a future decision)
+#   android_only  - concept/string only exists on Android
+#   ios_only      - concept/string only exists on iOS
+#
+# See gaps/android.md and gaps/ios.md for cross-platform feature gaps
+# surfaced during this audit that go beyond wording (e.g. Android's richer
+# per-day save messages, or iOS's dead ContentView.swift).
+#
+# CAVEAT: "android_only" / "ios_only" / "diverges" here mean "present in
+# strings.xml / Localizable.xcstrings" — NOT necessarily "shown to users."
+# Android's strings.xml in particular has real accumulated cruft: several
+# entries this audit assumed were live UI turned out to be unreferenced by
+# any .kt file once actually grepped (each such case is called out with a
+# "DEAD STRING" note where found). Every android_only/diverges/ios_only entry
+# was spot-checked for obvious problems but not exhaustively grep-verified
+# for live usage — treat this as a solid first-pass map to refine over time,
+# not a fully-audited ground truth for every single row.
+
+app:
+  name:
+    status: diverges
+    android_key: app_name
+    android_text: Rep Yourself
+    note: iOS app name lives in Info.plist (CFBundleDisplayName), not the String Catalog; DashboardView.Title
+      uses the same text as an in-app header.
+onboarding:
+  title:
+    status: match
+    android_key: onboarding_title
+    ios_key: OnboardingView.Title
+    text: Ready to Begin?
+  body:
+    status: fixed
+    android_key: onboarding_body
+    ios_key: OnboardingView.Body
+    text: Start the Armstrong Pull-up Program. Your progress is tracked and saved right here on your device.
+    note: Unified 2026-08-29 on iOS's phrasing. Android previously said 'Your progress will be automatically
+      tracked and saved on this device.'
+  start_new_program_button:
+    status: match_wording
+    android_key: onboarding_start_new_button
+    android_text: START NEW PROGRAM
+    ios_key: OnboardingView.StartNewProgramButton
+    ios_text: Start New Program
+    note: Words match; casing intentionally left as platform style (Android ALL CAPS, iOS Title Case)
+      — not treated as a wording mismatch.
+  import_button:
+    status: fixed
+    android_key: onboarding_restore_or_migrate
+    ios_key: OnboardingView.ImportButton
+    text: Import Previous Data
+    note: 'Unified 2026-08-29. This is the actual rendered onboarding button (OnboardingScreen.kt:389);
+      it previously said ''Restore or Migrate Data''. CORRECTION: the original audit assumed the visible
+      button was android_key `onboarding_restore_button` (''Migrate from PWA''), but that resource is
+      dead code — verified via grep that it''s never referenced in any .kt file. `onboarding_restore_button`''s
+      text was updated too for hygiene in case it''s revived, but it is NOT currently shown to users (see
+      import_button_unused below).'
+  import_button_unused:
+    status: android_only
+    android_key: onboarding_restore_button
+    android_text: Import Previous Data
+    note: DEAD STRING — grep confirms no Kotlin file references R.string.onboarding_restore_button; the
+      real onboarding import button uses onboarding_restore_or_migrate instead (see import_button above).
+      Candidate for deletion; left in place since deletion wasn't part of the approved scope.
+  import_icon_description:
+    status: android_only
+    android_key: migrate_data_icon_content_description
+    android_text: Import data
+    note: Renamed from 'Migrate data' for terminology consistency; no iOS counterpart string found.
+import_file_dialog:
+  title:
+    status: diverges
+    android_key: migrate_dialog_title
+    android_text: How to Find Your File
+    ios_key: OnboardingView.ImportInstructionsTitle
+    ios_text: Find Your File
+    note: Not reconciled this pass — flagged for a future wording pass.
+  step1:
+    status: android_only
+    android_key: migrate_dialog_step1
+    android_text: When your phone's file browser opens…
+    note: Android presents 3 numbered steps; iOS shows one consolidated paragraph (ImportInstructionsBody)
+      plus per-source caption cards — a structural UX difference, not just wording. Not reconciled.
+  step2:
+    status: android_only
+    android_key: migrate_dialog_step2
+    android_text: Look for and open the "Downloads" folder.
+  step3_unused:
+    status: android_only
+    android_key: migrate_dialog_step3
+    android_text: 'Find and tap the file:'
+    note: DEAD STRING — grep confirms `migrate_dialog_step3` is not referenced anywhere in Android Kotlin
+      source; only `migrate_dialog_step3_new` is used. Candidate for deletion; left in place since deletion
+      wasn't part of the approved scope.
+  step3:
+    status: diverges
+    android_key: migrate_dialog_step3_new
+    android_text: 'Select your backup file:'
+    ios_key: OnboardingView.ImportInstructionsBody
+    ios_text: If you've exported your data from the web app, or backed it up from Rep Yourself on iOS
+      or Android (Settings → Export Data), open the Files app and look for the exported file there — it's
+      usually in Downloads or on iCloud Drive.
+    note: Same structural-difference note as step1/step2.
+  native_filename_caption:
+    status: diverges
+    android_key: migrate_dialog_native_filename
+    android_text: RepYourself_Export.json
+    ios_key: OnboardingView.ImportInstructionsNativeCaption
+    ios_text: From Rep Yourself on iOS or Android
+    note: 'BUG FIXED 2026-08-29: Android''s string literally said ''Repyourself_Export.json'' (lowercase
+      y) — confirmed via grep that the real generated filename in SettingsScreen.kt is ''RepYourself_Export.json''.
+      Corrected the typo. Android shows the literal filename; iOS shows a source caption instead of a
+      filename — structural difference kept as-is.'
+  ios_filename_caption:
+    status: diverges
+    android_key: migrate_dialog_ios_filename
+    android_text: RepYourself_Export.json (from iPhone)
+    note: Android additionally calls out an iPhone-specific filename case; iOS's caption cards don't need
+      this distinction since the app already knows which platform it's running on.
+  pwa_filename_caption:
+    status: diverges
+    android_key: migrate_dialog_pwa_filename
+    android_text: Pull-Up-App-Backup.json
+    ios_key: OnboardingView.ImportInstructionsWebCaption
+    ios_text: From the web app
+    note: Same structural difference (literal filename vs. source caption).
+  reminder:
+    status: fixed
+    android_key: migrate_dialog_reminder
+    android_text: If you haven't exported this file yet — from Settings on your other Rep Yourself app
+      or the web app — please do so first.
+    ios_key: OnboardingView.ImportInstructionsReminder
+    ios_text: Haven't exported your data yet? Use Export Data in Settings on your other device (or the
+      web app), then come back here.
+    note: 'Unified 2026-08-29. CORRECTION: an earlier draft of this audit assumed Android''s import only
+      supported PWA exports, based on the reminder text alone — that was wrong. gaps/android.md''s now-Resolved
+      ''add-ios-native-import'' entry (PR #51) shows Android''s OnboardingViewModel.performMigration()
+      already tries PWA then IosNativeExport formats, and migrate_dialog_native_filename/migrate_dialog_ios_filename
+      already list all 3 source filenames (Android/iOS/web) — only the reminder sentence''s wording hadn''t
+      caught up to say so. Reworded to mention ''your other Rep Yourself app'' alongside the web app,
+      matching the capability that already exists. Not fully identical to iOS''s phrasing (Android''s
+      stays close to its own dialog''s step-by-step voice).'
+  confirm_button:
+    status: diverges
+    android_key: migrate_dialog_confirm_button
+    android_text: Got It, Open Files
+    ios_key: OnboardingView.ImportInstructionsConfirmButton
+    ios_text: Continue
+    note: Not reconciled this pass — flagged for a future wording pass.
+  cancel_button:
+    status: ios_only
+    ios_key: OnboardingView.ImportInstructionsCancelButton
+    text: Cancel
+  or_divider:
+    status: android_only
+    android_key: migrate_dialog_or
+    android_text: OR
+  step_number_format:
+    status: android_only
+    android_key: migrate_dialog_step_number
+    android_text: '%1$d.'
+    note: ADDED 2026-08-29 — replaces literal '1.'/'2.'/'3.' Text() calls previously hardcoded in OnboardingScreen.kt
+      (a wording-audit finding). No iOS equivalent needed; iOS doesn't number its consolidated import
+      instructions.
+  file_picker_error:
+    status: diverges
+    ios_key: OnboardingView.FilePickerErrorTemplate
+    ios_text: 'Couldn''t open file picker: %@'
+    note: No Android equivalent found for a file-picker-launch-failure message specifically.
+permissions:
+  notifications_rationale:
+    status: android_only
+    android_key: permission_notifications_rationale
+    android_text: Notifications are recommended for rest timers.
+  alarm_title:
+    status: android_only
+    android_key: permission_alarm_title
+    android_text: Permission Needed for Timers
+  notifications_title:
+    status: android_only
+    android_key: permission_notifications_title
+    android_text: Enable Notifications?
+  notifications_body:
+    status: android_only
+    android_key: permission_notifications_body
+    android_text: To show rest timers when the app is in the background, please allow the app to send
+      you notifications.
+  continue_button:
+    status: android_only
+    android_key: permission_continue_button
+    android_text: Continue
+  alarm_body:
+    status: android_only
+    android_key: permission_alarm_body
+    android_text: To ensure rest timers are precise even when the screen is off, this app needs permission
+      to schedule exact alarms.
+  alarm_confirm_button:
+    status: android_only
+    android_key: permission_alarm_confirm_button
+    android_text: Go to Settings
+    note: 'Whole section is a deliberate platform difference, not a gap: Android shows a custom rationale
+      screen before the system permission prompt; iOS requests permission lazily via the system dialog
+      only, on first rest-timer use (per ios/CLAUDE.md''s Firebase Analytics notes), with no custom rationale
+      UI.'
+dashboard:
+  settings_icon_description:
+    status: match
+    android_key: dashboard_settings_icon_description
+    ios_key: DashboardView.SettingsButtonAccessibility
+    text: Settings
+  error_title:
+    status: android_only
+    android_key: dashboard_error_title
+    android_text: Couldn't load your data
+  error_message:
+    status: diverges
+    android_key: dashboard_error_message
+    android_text: Something went wrong loading your workout data. Please try again.
+    ios_key: RootView.PersistentStoreDegradedBanner
+    ios_text: Couldn't open your saved data. Changes made now won't be saved once you close the app.
+    note: 'Intentionally NOT merged — these describe different failure conditions: Android''s is a retryable
+      data-load error; iOS''s is a passive degraded-persistent-store warning. Kept separate per the audit
+      plan.'
+  error_retry:
+    status: android_only
+    android_key: dashboard_error_retry
+    android_text: Retry
+  sort_by_week_accessibility:
+    status: match
+    android_key: overview_card_sort_by_week_description
+    ios_key: DashboardView.SortByWeekAccessibility
+    text: Sort by week
+    note: Android's version ADDED 2026-08-29 — replaces a hardcoded contentDescription literal in DashboardScreen.kt
+      (a wording-audit finding); happened to already match iOS's existing string.
+  grid_pending_accessibility:
+    status: ios_only
+    ios_key: DashboardView.GridPendingAccessibility
+    text: Pending
+suggested_workout:
+  title_today:
+    status: match
+    android_key: suggested_workout_card_title
+    ios_key: DashboardView.TodaysWorkoutTitle
+    text: Today's Workout
+  title_next:
+    status: match
+    android_key: suggested_workout_card_next
+    ios_key: DashboardView.NextWorkoutTitle
+    text: Next Workout
+  week_day_label:
+    status: match
+    android_key: suggested_workout_week_day
+    android_text: Week %1$d, Day %2$d
+    ios_key: DashboardView.WeekDayLabel
+    ios_text: Week %lld, Day %lld
+  week_label_fragment:
+    status: android_only
+    android_key: week_label
+    android_text: Week\u0020
+    note: Internal formatting fragment; iOS composes the equivalent inline in WeekDayLabel.
+  day_label_fragment:
+    status: android_only
+    android_key: day_label
+    android_text: ',\u0020Day\u0020'
+  details_toggle:
+    status: match
+    android_key: suggested_workout_details
+    ios_key: DashboardView.DetailsDisclosureLabel
+    text: Details
+  details_collapse_accessibility:
+    status: android_only
+    android_key: suggested_workout_details_collapse
+    android_text: Collapse details
+  details_expand_accessibility:
+    status: android_only
+    android_key: suggested_workout_details_expand
+    android_text: Expand details
+  start_button:
+    status: match
+    android_key: suggested_workout_start
+    ios_key: DashboardView.StartWorkoutButton
+    text: START
+  skip_button:
+    status: match
+    android_key: suggested_workout_skip
+    ios_key: DashboardView.SkipButton
+    text: Skip
+  no_workout_title:
+    status: android_only
+    android_key: suggested_workout_no_workout_title
+    android_text: No Workout Today
+  no_workout_reason_completed:
+    status: android_only
+    android_key: suggested_workout_no_workout_reason_completed
+    android_text: Program Complete! Reset to start a new cycle.
+overview:
+  title:
+    status: match
+    android_key: overview_card_title
+    ios_key: DashboardView.OverviewTitle
+    text: Overview
+  reset_program_button:
+    status: match
+    android_key: overview_card_reset_program
+    ios_key: SettingsView.ResetProgramButton
+    text: Reset Program
+  reset_dialog_title:
+    status: match
+    android_key: overview_card_reset_dialog_title
+    ios_key: SettingsView.ResetConfirmationTitle
+    text: Reset Program?
+  empty_history:
+    status: match
+    android_key: overview_card_empty_history
+    ios_key: DashboardView.OverviewEmptyState
+    text: Complete a workout to see your history here.
+  reset_dialog_body:
+    status: diverges
+    android_key: overview_card_reset_dialog_body
+    android_text: This will permanently delete all workout history and reset your progress to Week 1,
+      Day 1. Your theme and notification settings will be kept. This action cannot be undone.
+    ios_key: SettingsView.ResetConfirmationBody
+    ios_text: This will permanently delete all workout history and reset your progress to Week 1, Day
+      1. This action cannot be undone.
+    note: Android's body includes an extra reassurance sentence ('Your theme and notification settings
+      will be kept.') that iOS's omits. Worth considering adding to iOS, not done this pass.
+  reset_confirm_button:
+    status: diverges
+    android_key: overview_card_confirm_reset
+    android_text: Yes, Reset
+    ios_key: SettingsView.ResetConfirmationConfirm
+    ios_text: Reset
+  history_by_week:
+    status: android_only
+    android_key: overview_card_history_by_week
+    android_text: History by Week
+  current_week_marker:
+    status: android_only
+    android_key: overview_card_current_week_marker
+    android_text: Current
+  view_summary:
+    status: android_only
+    android_key: overview_card_view_summary
+    android_text: View Summary
+  legend_completed:
+    status: match
+    android_key: overview_card_legend_completed
+    ios_key: DashboardView.LegendCompleted
+    text: Completed
+  legend_finished_early:
+    status: match
+    android_key: overview_card_legend_finished_early
+    ios_key: DashboardView.LegendPartial
+    text: Shortened
+  legend_skipped:
+    status: match
+    android_key: overview_card_legend_skipped
+    ios_key: DashboardView.LegendSkipped
+    text: Skipped
+  current_day_cell_accessibility:
+    status: match
+    android_key: overview_card_current_day_cell
+    android_text: Start workout for day %1$d
+    ios_key: DashboardView.CurrentDayCellAccessibility
+    ios_text: Start workout for day %lld
+max_effort:
+  logged_sets_label:
+    status: android_only
+    android_key: max_effort_logged_sets
+    android_text: 'Logged Sets:'
+  set_label:
+    status: match
+    android_key: max_effort_set_label
+    android_text: Set %1$d
+    ios_key: MaxEffortSession.SetLabel
+    ios_text: Set %lld
+  undo_last_button:
+    status: match_wording
+    android_key: max_effort_undo_last_button
+    android_text: Undo Last
+    ios_key: MaxEffortLoggingContent.UndoLastButton
+    ios_text: UNDO LAST
+    note: Casing left as platform style.
+  log_set_button:
+    status: match_wording
+    android_key: max_effort_log_set_button
+    android_text: Log Set %1$d
+    ios_key: MaxEffortLoggingContent.LogSetButton
+    ios_text: LOG SET %lld
+  reps_label:
+    status: android_only
+    android_key: max_effort_reps_label
+    android_text: Reps
+    note: Generic 'Reps' label; see common.reps for the shared concept.
+  current_set_of_total:
+    status: diverges
+    android_key: max_effort_current_set
+    android_text: Set %1$d of 5
+    ios_key: MaxEffortLoggingContent.SetOfTotalHeadline
+    ios_text: SET %lld OF %lld
+    note: Android hardcodes the total as literal '5'; iOS parametrizes both numbers. Same output today
+      since Day 1 is always 5 sets on both platforms.
+  instructions_combined:
+    status: android_only
+    android_key: max_effort_instructions
+    android_text: Max-out! Rest 90 seconds between sets.
+    note: Possibly superseded by the separate max_out/push_to_failure strings below, which iOS mirrors
+      as two discrete strings — verify this combined string is still used in MaxEffortScreen.kt.
+  max_out_headline:
+    status: match
+    android_key: max_out
+    ios_key: MaxEffortLoggingContent.MaxOutHeadline
+    text: MAX OUT!
+  push_to_failure:
+    status: match
+    android_key: push_to_failure
+    ios_key: MaxEffortLoggingContent.PushToFailureSubheadline
+    text: Push to failure.
+  complete_title:
+    status: match_wording
+    android_key: max_effort_complete_title
+    android_text: Workout Complete!
+    ios_key: WorkoutDayView.WorkoutCompleteHeadline
+    ios_text: WORKOUT COMPLETE!
+    note: DEAD STRING on Android — grep confirms 0 usages. The live shared string for this concept is
+      `workout_complete` (used by WorkoutCompleteHero.kt across all 4 days), see common_phrases.workout_complete_generic.
+      This key, pyramid_workout_complete_title, and max_training_summary_title are all dead duplicates
+      of it.
+  complete_body:
+    status: diverges
+    android_key: max_effort_complete_body
+    android_text: Excellent effort. Time to save your results.
+    ios_key: WorkoutDayView.FinishSaveHint
+    ios_text: Tap Finish & Save below to log today's session.
+    note: Part of a family of near-duplicate Android 'time to save' strings (see max_training_summary_closing,
+      workout_summary_closing) that all map loosely to iOS's one FinishSaveHint.
+pyramid_workout:
+  attempting_set:
+    status: match
+    android_key: pyramid_workout_attempting_set
+    android_text: 'Set: %1$s'
+    ios_key: PyramidLoggingContent.RungLabel
+    ios_text: SET %lld
+  instructions:
+    status: match
+    android_key: pyramid_workout_instructions
+    ios_key: PyramidLoggingContent.ClimbLadderHint
+    text: Ascend until you fail. Rest 10s per rep.
+  success_button:
+    status: match
+    android_key: pyramid_workout_success_button
+    ios_key: PyramidLoggingContent.HitTargetButton
+    text: SUCCESS
+  do_reps_headline:
+    status: match
+    android_key: pyramid_workout_do_reps
+    android_text: DO %1$s
+    ios_key: PyramidLoggingContent.HitTargetHeadline
+    ios_text: DO %lld %#@reps@
+  failed_set_title:
+    status: match
+    android_key: pyramid_workout_failed_set_title
+    ios_key: PyramidLoggingContent.SetFailedLabel
+    text: Failed Set
+  failed_set_prompt:
+    status: match
+    android_key: pyramid_workout_failed_set_prompt
+    ios_key: PyramidLoggingContent.HowManyPrompt
+    text: HOW MANY?
+  failed_set_body:
+    status: match
+    android_key: pyramid_workout_failed_set_body
+    ios_key: PyramidLoggingContent.FailedSetBodyHint
+    text: Log your actual reps for this set
+  final_max_title:
+    status: match
+    android_key: pyramid_workout_final_max_title
+    ios_key: PyramidLoggingContent.FinalSetLabel
+    text: FINAL BURNOUT
+  final_max_body:
+    status: diverges
+    android_key: pyramid_workout_final_max_body
+    android_text: Perform one final MAX OUT set to failure.
+    ios_key: PyramidLoggingContent.OneLastMaxOutHeadline
+    ios_text: MAX OUT!
+    note: Android's fuller sentence vs. iOS's short headline reusing the shared 'MAX OUT!' phrase. Not
+      reconciled this pass.
+  final_max_prompt:
+    status: match
+    android_key: pyramid_workout_final_max_prompt
+    ios_key: PyramidLoggingContent.FinalMaxBodyHint
+    text: Do as many reps as possible to finish
+  summary_peak_combined:
+    status: android_only
+    android_key: pyramid_workout_summary_peak
+    android_text: 'Pyramid Peak: %1$s'
+    note: Android combines label+value in one string; iOS keeps the 'Peak'/'Pyramid Peak' label and the
+      numeric value as two separate pieces (see summary label entries below).
+  summary_failed_set_reps_combined:
+    status: android_only
+    android_key: pyramid_workout_summary_failed_set_reps
+    android_text: 'Completed in Failed Set: %1$s'
+  summary_final_set_combined:
+    status: android_only
+    android_key: pyramid_workout_summary_final_set
+    android_text: 'Final Max Set: %1$s'
+  complete_title:
+    status: match_wording
+    android_key: pyramid_workout_complete_title
+    android_text: Workout Complete!
+    ios_key: WorkoutDayView.WorkoutCompleteHeadline
+    ios_text: WORKOUT COMPLETE!
+    note: DEAD STRING — see max_effort.complete_title's note; live one is `workout_complete`.
+  summary_label:
+    status: android_only
+    android_key: pyramid_workout_summary_label
+    android_text: Workout Summary
+  summary_peak_label:
+    status: match
+    android_key: pyramid_workout_summary_peak_label
+    ios_key: PyramidSession.PeakLabel
+    text: Peak
+  summary_ascent_label:
+    status: match
+    android_key: pyramid_workout_summary_ascent_label
+    ios_key: PyramidSession.AscentLabel
+    text: Ascent
+  summary_failed_label:
+    status: match
+    android_key: pyramid_workout_summary_failed_label
+    ios_key: PyramidSession.FailedSetLabel
+    text: Descend
+  summary_final_label:
+    status: match
+    android_key: pyramid_workout_summary_final_label
+    ios_key: PyramidSession.FinalMaxLabel
+    text: Final
+  summary_not_logged:
+    status: match
+    android_key: pyramid_workout_summary_not_logged
+    ios_key: WorkoutDayView.NotLoggedLabel
+    text: --
+training_grips:
+  input_reps_title:
+    status: diverges
+    android_key: training_grips_input_reps_title
+    android_text: Confirm Training Reps
+    ios_key: TrainingSetsGripsLoggingContent.SetTargetLabel
+    ios_text: SET YOUR TARGET
+    note: DEAD STRING on Android — 0 usages found; the real live title for this concept, if any, is likely
+      training_set_setter_scream ('SET YOUR GOAL') instead. Not reconciled this pass.
+  input_reps_body:
+    status: diverges
+    android_key: training_grips_input_reps_body
+    android_text: This is the target for each of your 9 training sets today.
+    ios_key: TrainingSetsGripsLoggingContent.TargetRepsHeadline
+    ios_text: How many reps per set?
+  confirm_and_start:
+    status: match_wording
+    android_key: training_grips_confirm_and_start
+    android_text: Confirm and Start
+    ios_key: TrainingSetsGripsLoggingContent.ConfirmButton
+    ios_text: CONFIRM & START
+  select_grip_title:
+    status: diverges
+    android_key: training_grips_select_grip_title
+    android_text: GRIP SELECTION
+    ios_key: TrainingSetsGripsLoggingContent.SelectGripTitle
+    ios_text: Pick a Grip
+  three_more:
+    status: match
+    android_key: select_first_grip_title
+    ios_key: TrainingSetsGripsLoggingContent.ThreeGripsRemainingLabel
+    text: 3 MORE
+  two_more:
+    status: match
+    android_key: select_second_grip_title
+    ios_key: TrainingSetsGripsLoggingContent.TwoGripsRemainingLabel
+    text: 2 MORE
+  last_one:
+    status: match
+    android_key: select_third_grip_title
+    ios_key: TrainingSetsGripsLoggingContent.LastGripLabel
+    text: LAST ONE!
+  choose_next_position:
+    status: android_only
+    android_key: training_grips_choose_next_position
+    android_text: Choose your next hand position
+  remaining_grips_text:
+    status: android_only
+    android_key: training_grips_remaining_grips_text
+    android_text: You have %s to complete.
+  change_grip_button:
+    status: match
+    android_key: training_grips_change_grip_button
+    ios_key: TrainingSetsGripsLoggingContent.ChangeGripButton
+    text: Change Grip
+  change_grip_info:
+    status: android_only
+    android_key: training_grips_change_grip_info
+    android_text: Only available before first set logged.
+  change_target_button:
+    status: match
+    android_key: workout_change_target_reps_button
+    ios_key: TrainingSetsGripsLoggingContent.ChangeTargetRepsButton
+    text: Change Target
+  perform_set_context:
+    status: match
+    android_key: training_grips_perform_set_context
+    android_text: SET %1$d OF 3
+    ios_key: TrainingSetsGripsLoggingContent.SetOfTotalHeadline
+    ios_text: SET %lld OF %lld
+  perform_set_title:
+    status: android_only
+    android_key: training_grips_perform_set_title
+    android_text: '%1$s Grip: Set %2$d'
+  perform_set_body:
+    status: android_only
+    android_key: training_grips_perform_set_body
+    android_text: Focus on perfect form
+  standard_grips_label:
+    status: android_only
+    android_key: training_grips_standard_grips_label
+    android_text: STANDARD GRIPS
+    note: iOS uses a Show/Hide toggle (ShowOtherGripsButton/HideOtherGripsButton) instead of a fixed 'STANDARD
+      GRIPS' section label — structural UX difference, not reconciled.
+  other_grips_label:
+    status: android_only
+    android_key: training_grips_other_grips_label
+    android_text: OTHER GRIPS
+  show_other_grips_button:
+    status: ios_only
+    ios_key: TrainingSetsGripsLoggingContent.ShowOtherGripsButton
+    text: Show Other Grips
+  hide_other_grips_button:
+    status: ios_only
+    ios_key: TrainingSetsGripsLoggingContent.HideOtherGripsButton
+    text: Hide Other Grips
+  log_failed_title:
+    status: fixed
+    android_key: training_grips_log_failed_title
+    ios_key: TrainingSetsGripsLoggingContent.SetFailedLabel
+    text: Log Failed Set
+    note: Unified 2026-08-29. iOS previously said 'SET FAILED'; adopted Android's phrase (also matches
+      Day 4's equivalent title).
+  log_failed_body:
+    status: diverges
+    android_key: training_grips_log_failed_body
+    android_text: You failed to complete your target of %1$s.
+    ios_key: TrainingSetsGripsLoggingContent.HowManyPrompt
+    ios_text: How many reps did you get?
+    note: Different presentation — Android states the failure ('You failed to complete your target of
+      X'), iOS asks a question. Not merged; may be an intentional interaction difference (verify against
+      actual view flow before forcing a match).
+  summary_title:
+    status: android_only
+    android_key: training_grips_summary_title
+    android_text: 'Grip Summary:'
+    note: Confirmed live (used in TrainingSetsGripsScreen.kt). No matching 'Grip Summary' label found
+      among iOS's DayDetailSheet keys — a real possible content gap, worth verifying whether iOS's day-detail
+      sheet surfaces per-grip results another way rather than under this label.
+  summary_simple_total:
+    status: android_only
+    android_key: training_grips_summary_simple_total
+    android_text: You completed a total of %1$s.
+training_sets_max:
+  input_reps_body:
+    status: diverges
+    android_key: max_training_input_reps_body
+    android_text: This is the target for each training set.
+    ios_key: TrainingSetsMaxLoggingContent.TargetRepsHeadline
+    ios_text: How many reps per set?
+  set_label:
+    status: match
+    android_key: max_training_set_label
+    android_text: 'SET: %1$d'
+    ios_key: TrainingSetsMaxLoggingContent.SetLabel
+    ios_text: SET %lld
+  set_goal_label:
+    status: android_only
+    android_key: max_training_set_goal_label
+    android_text: '• GOAL: 9'
+    note: Android hardcodes the goal as literal '9'; iOS's goal is fully parametrized (no fixed-9 string)
+      — verify Android doesn't break if the underlying goal value ever changes.
+  goal_met:
+    status: match_wording
+    android_key: max_training_set_goal_met
+    android_text: • GOAL MET
+    ios_key: TrainingSetsMaxLoggingContent.GoalMetLabel
+    ios_text: GOAL MET
+  perform_set_body:
+    status: android_only
+    android_key: max_training_perform_set_body
+    android_text: Complete as many sets as possible
+  log_failed_title:
+    status: fixed
+    android_key: max_training_log_failed_title
+    ios_key: TrainingSetsMaxLoggingContent.SetFailedLabel
+    text: Log Failed Set
+    note: Unified 2026-08-29. iOS previously said 'SET FAILED'; adopted Android's phrase.
+  log_failed_body:
+    status: diverges
+    android_key: max_training_log_failed_body
+    android_text: You failed to complete %1$s.
+    ios_key: TrainingSetsMaxLoggingContent.HowManyPrompt
+    ios_text: How many reps did you get?
+    note: Same statement-vs-question pattern as training_grips.log_failed_body.
+  reps_completed_prompt:
+    status: diverges
+    android_key: max_training_reps_completed_prompt
+    android_text: How many reps did you complete?
+    note: Near-duplicate of the HowManyPrompt concept just above ('did you complete?' vs 'did you get?')
+      — likely redundant with log_failed_body's counterpart.
+  summary_title:
+    status: match_wording
+    android_key: max_training_summary_title
+    android_text: Workout Complete!
+    ios_key: WorkoutDayView.WorkoutCompleteHeadline
+    ios_text: WORKOUT COMPLETE!
+    note: DEAD STRING — see max_effort.complete_title's note; live one is `workout_complete`.
+  summary_body:
+    status: android_only
+    android_key: max_training_summary_body
+    android_text: You completed %1$s.
+  summary_closing:
+    status: diverges
+    android_key: max_training_summary_closing
+    android_text: Great work. Save your results.
+    ios_key: WorkoutDayView.FinishSaveHint
+    ios_text: Tap Finish & Save below to log today's session.
+    note: DEAD STRING — 0 usages found. The live shared 'time to save' string is workout_summary_closing
+      ('Great effort. Time to save your results.', 3 usages) — see common_phrases.workout_summary_closing.
+  performance_summary_title:
+    status: android_only
+    android_key: max_training_performance_summary_title
+    android_text: 'Performance:'
+    note: DEAD STRING — 0 usages found.
+  performance_successful_sets:
+    status: match
+    android_key: max_training_performance_successful_sets
+    ios_key: DayDetailSheet.SuccessfulSets
+    text: Successful Sets
+    note: iOS also holds this same value under TrainingSetsMaxSession.SetsLabel for the in-session summary.
+  performance_failed_reps:
+    status: match
+    android_key: max_training_performance_failed_reps
+    ios_key: DayComparisonSheet.MaxTrainingFailedReps
+    text: Final Reps
+    note: iOS also holds this same value under TrainingSetsMaxSession.FailedSetLabel for the in-session
+      summary.
+  performance_not_logged:
+    status: match
+    android_key: max_training_performance_not_logged
+    ios_key: WorkoutDayView.NotLoggedLabel
+    text: --
+repeat_toughest:
+  day_title:
+    status: diverges
+    android_key: repeat_toughest_day_title
+    android_text: Select the workout you found the most difficult this week.
+    ios_key: RepeatToughestChoiceView.Header
+    ios_text: Pick the day you found hardest this week
+  day_button_label:
+    status: diverges
+    android_key: repeat_toughest_day_button_label
+    android_text: 'Day %1$d: %2$s'
+    note: Android parametrizes one button label; iOS hardcodes 4 separate strings (RepeatMaxEffort/RepeatPyramid/RepeatTrainingSetsGrips/RepeatTrainingSetsMax)
+      — see repeat_toughest.day_button_variants below.
+  day_button_label_plain:
+    status: android_only
+    android_key: repeat_toughest_day_button_label_day
+    android_text: Day %1$d
+  context_label:
+    status: match
+    android_key: repeat_toughest_day_context_label
+    ios_key: RepeatToughestChoiceView.Eyebrow
+    text: DAY 5 PREP
+  scream:
+    status: diverges
+    android_key: repeat_toughest_day_scream
+    android_text: WHICH WAS TOUGHEST?
+    ios_key: RepeatToughestChoiceView.Headline
+    ios_text: WHICH DAY WAS TOUGHEST?
+  sub_instruction:
+    status: diverges
+    android_key: repeat_toughest_day_sub_instruction
+    android_text: Select the workout you found the most difficult this week
+    ios_key: RepeatToughestChoiceView.Header
+    ios_text: Pick the day you found hardest this week
+    note: Near-duplicate of repeat_toughest.day_title within Android itself.
+  day_button_variants:
+    status: ios_only
+    note: 'iOS keys: RepeatToughestChoiceView.RepeatMaxEffort=''Repeat Day 1: Max Effort Sets'', RepeatPyramid=''Repeat
+      Day 2: Pyramid'', RepeatTrainingSetsGrips=''Repeat Day 3: Training Sets & Grips'', RepeatTrainingSetsMax=''Repeat
+      Day 4: Max Training Sets''.'
+  screen_title:
+    status: ios_only
+    ios_key: RepeatToughestChoiceView.ScreenTitle
+    text: 'Day 5: Repeat Toughest Day'
+  status_completed:
+    status: match
+    ios_key: RepeatToughestChoiceView.StatusCompleted
+    text: Completed
+  status_skipped:
+    status: match
+    ios_key: RepeatToughestChoiceView.StatusSkipped
+    text: Skipped
+  status_partial:
+    status: ios_only
+    ios_key: RepeatToughestChoiceView.StatusPartial
+    text: Partial
+  status_pending:
+    status: ios_only
+    ios_key: RepeatToughestChoiceView.StatusPending
+    text: Not done yet
+comparison_sheet:
+  title:
+    status: match
+    android_key: comparison_sheet_title
+    android_text: Day %1$d Comparison
+    ios_key: DayComparisonSheet.Title
+    ios_text: Day %lld Comparison
+  week_label:
+    status: match
+    android_key: comparison_sheet_week_label
+    android_text: Week %1$d
+    ios_key: DayComparisonSheet.WeekLabel
+    ios_text: Week %lld
+  workout_type_title_passthrough:
+    status: android_only
+    android_key: comparison_sheet_workout_type_title
+    android_text: '%1$s'
+    note: Trivial passthrough format string ('%1$s'), no real wording content.
+  metric_max_reps:
+    status: match
+    android_key: comparison_metric_max_reps
+    ios_key: DayComparisonSheet.MaxReps
+    text: Max
+  metric_total_reps:
+    status: match
+    android_key: comparison_metric_total_reps
+    ios_key: DayComparisonSheet.TotalReps
+    text: Total
+  metric_peak:
+    status: match
+    android_key: comparison_metric_peak
+    ios_key: DayComparisonSheet.Peak
+    text: Peak
+  metric_successful_sets:
+    status: android_only
+    android_key: comparison_metric_successful_sets
+    android_text: Sets
+  metric_successful_sets_of:
+    status: match
+    android_key: comparison_metric_successful_sets_of_format
+    android_text: Sets (%1$d)
+    ios_key: DayComparisonSheet.SuccessfulSetsOf
+    ios_text: Sets (%lld)
+  metric_repeated_day_label:
+    status: android_only
+    android_key: comparison_metric_repeated_day
+    android_text: Repeated
+  metric_repeated_day_value:
+    status: match
+    android_key: comparison_metric_repeated_day_value
+    android_text: Day %1$s
+    ios_key: DayComparisonSheet.RepeatedDayValue
+    ios_text: Day %lld
+  metric_target_reps:
+    status: match
+    android_key: comparison_metric_target_reps
+    ios_key: DayDetailSheet.TargetReps
+    text: Target Reps
+  no_grip_data:
+    status: match
+    android_key: comparison_no_grip_data
+    ios_key: DayDetailSheet.NoGripDetails
+    text: No grip details recorded.
+  metric_failed_reps:
+    status: diverges
+    android_key: comparison_metric_failed_reps
+    android_text: Failed Reps
+    ios_key: DayComparisonSheet.MaxTrainingFailedReps
+    ios_text: Final Reps
+  pyramid_descend_label:
+    status: match
+    ios_key: DayComparisonSheet.PyramidDescend
+    text: Descend
+    note: Comparison-sheet-specific copy of the Descend label; see pyramid_workout.summary_failed_label
+      for the in-session version (PyramidSession.FailedSetLabel).
+  pyramid_final_label:
+    status: match
+    ios_key: DayComparisonSheet.PyramidFinal
+    text: Final
+    note: Comparison-sheet-specific copy of the Final label; see pyramid_workout.summary_final_label for
+      the in-session version (PyramidSession.FinalMaxLabel).
+weekly_summary:
+  title:
+    status: match
+    android_key: weekly_summary_title
+    android_text: Week %1$d Summary
+    ios_key: WeeklySummarySheet.Title
+    ios_text: Week %lld Summary
+  total_reps:
+    status: match
+    android_key: weekly_summary_total_reps
+    ios_key: WeeklySummarySheet.RingTotalReps
+    text: Total Reps
+  workouts_done:
+    status: android_only
+    android_key: weekly_summary_workouts_done
+    android_text: 'Workouts Done:'
+  workouts_done_value:
+    status: android_only
+    android_key: weekly_summary_workouts_done_value
+    android_text: '%1$d of 5'
+  highlights:
+    status: android_only
+    android_key: weekly_summary_highlights
+    android_text: Highlights
+  max_rep_set:
+    status: diverges
+    android_key: weekly_summary_max_rep_set
+    android_text: 'Max Rep Set:'
+    ios_key: WeeklySummarySheet.MaxReps
+    ios_text: Max
+  pyramid_peak:
+    status: diverges
+    android_key: weekly_summary_pyramid_peak
+    android_text: 'Pyramid Peak:'
+    ios_key: WeeklySummarySheet.Peak
+    ios_text: Peak
+  training_sets:
+    status: android_only
+    android_key: weekly_summary_training_sets
+    android_text: 'Training Sets:'
+    note: Uncertain iOS counterpart — WeeklySummarySheet.MetricTotalReps ('Total') may or may not serve
+      this same highlight row. Verify against the actual view before pairing.
+  daily_status:
+    status: match
+    android_key: weekly_summary_daily_status
+    ios_key: WeeklySummarySheet.DailyStatus
+    text: Daily Status
+  day_label_colon:
+    status: diverges
+    android_key: weekly_summary_day_label
+    android_text: 'Day %1$d:'
+    ios_key: WeeklySummarySheet.DayNumber
+    ios_text: Day %lld
+  day_number:
+    status: match
+    android_key: weekly_summary_day_number
+    android_text: Day %1$d
+    ios_key: WeeklySummarySheet.DayNumber
+    ios_text: Day %lld
+  grips_used:
+    status: android_only
+    android_key: weekly_summary_grips_used
+    android_text: 'Grips Used:'
+  status_completed:
+    status: match
+    android_key: weekly_summary_status_completed_fully
+    ios_key: DashboardView.LegendCompleted
+    text: Completed
+  status_finished_early:
+    status: match
+    android_key: weekly_summary_status_finished_early
+    ios_key: DashboardView.LegendPartial
+    text: Shortened
+  status_skipped:
+    status: match
+    android_key: weekly_summary_status_skipped
+    ios_key: WeeklySummarySheet.SkippedLabel
+    text: Skipped
+  status_pending:
+    status: match
+    android_key: weekly_summary_status_pending
+    ios_key: WeeklySummarySheet.StatusPending
+    text: Upcoming
+  successful_sets_day4:
+    status: android_only
+    android_key: weekly_summary_successful_sets
+    android_text: 'Successful Sets (Day 4):'
+  improvement_title:
+    status: android_only
+    android_key: weekly_summary_improvement_title
+    android_text: Day 5 Improvement
+    note: 'DEAD STRINGS — grep confirms weekly_summary_improvement_title and all 4 new_* rows below have
+      0 references in any .kt file. CORRECTION: an earlier draft of this audit called this a possible
+      iOS feature gap (''iOS may not show a Day 5 before/after comparison''); that was backwards — Android
+      itself doesn''t currently show this ''Day 5 Improvement'' section either, despite the strings being
+      defined. Not a cross-platform gap, just unused Android resources.'
+  new_max_rep_set:
+    status: android_only
+    android_key: weekly_summary_new_max_rep_set
+    android_text: 'New Max Rep Set:'
+  new_pyramid_peak:
+    status: android_only
+    android_key: weekly_summary_new_pyramid_peak
+    android_text: 'New Pyramid Peak:'
+  new_grips_sets:
+    status: android_only
+    android_key: weekly_summary_new_grips_sets
+    android_text: 'New Day 3 Sets:'
+  new_max_sets:
+    status: android_only
+    android_key: weekly_summary_new_max_sets
+    android_text: 'New Day 4 Sets:'
+  all_skipped_title:
+    status: match
+    android_key: weekly_summary_all_skipped_title
+    ios_key: WeeklySummarySheet.AllSkippedTitle
+    text: All Workouts Skipped
+  all_skipped_body:
+    status: match
+    android_key: weekly_summary_all_skipped_body
+    ios_key: WeeklySummarySheet.AllSkippedBody
+    text: Rest is important. Get ready to come back stronger next week!
+  repeated_day_value:
+    status: match
+    ios_key: WeeklySummarySheet.RepeatedDayValue
+    text: Day %lld
+    note: Weekly-summary-specific copy of the same 'Day %d' value format used in comparison_sheet.metric_repeated_day_value.
+  successful_sets_of:
+    status: match
+    ios_key: WeeklySummarySheet.SuccessfulSetsOf
+    text: Sets (%lld)
+    note: Weekly-summary-specific copy of comparison_sheet.metric_successful_sets_of.
+training_set_setter:
+  context_label:
+    status: android_only
+    android_key: training_set_setter_context_label
+    android_text: TRAINING SET PREP
+  goal_scream:
+    status: diverges
+    android_key: training_set_setter_scream
+    android_text: SET YOUR GOAL
+    note: iOS's per-screen equivalent (TrainingSetsGripsLoggingContent.SetTargetLabel / TrainingSetsMaxLoggingContent.SetTargetLabel)
+      says 'SET YOUR TARGET' — GOAL vs TARGET wording differs. Not reconciled.
+  sub_day3:
+    status: diverges
+    android_key: training_set_setter_sub_day3
+    android_text: This number will be used for all 9 sets
+    ios_key: TrainingSetsGripsLoggingContent.TargetRepsSubheadline
+    ios_text: You'll aim for this on every set, with every grip
+  sub_default:
+    status: diverges
+    android_key: training_set_setter_sub_default
+    android_text: This number will be used for all max sets
+    ios_key: TrainingSetsMaxLoggingContent.TargetRepsSubheadline
+    ios_text: You'll aim for this every set until you can't
+  start_button:
+    status: diverges
+    android_key: training_set_setter_start_button
+    android_text: START WORKOUT
+    note: Closest iOS equivalent at this step is ConfirmButton ('CONFIRM & START'); no separate 'START
+      WORKOUT'-only button found.
+  set_target_label:
+    status: ios_only
+    text: SET YOUR TARGET
+    note: Shared value of TrainingSetsGripsLoggingContent.SetTargetLabel and TrainingSetsMaxLoggingContent.SetTargetLabel;
+      see goal_scream note above.
+common_actions:
+  cancel:
+    status: match
+    android_key: cancel
+    ios_key: SettingsView.ResetConfirmationCancel
+    text: Cancel
+    note: 'Shared across many iOS keys: OnboardingView.ImportInstructionsCancelButton, WorkoutDayView.CancelButton,
+      RepCounterControl.DoneButton uses ''Done'' not ''Cancel'' (separate concept).'
+  navigate_back_accessibility:
+    status: android_only
+    android_key: navigate_back
+    android_text: Navigate back
+  workout_exit_dialog_title:
+    status: android_only
+    android_key: workout_exit_dialog_title
+    android_text: Leave Workout?
+    note: No iOS 'Leave Workout?' dialog found — iOS may allow navigating back mid-workout without a confirmation,
+      relying only on the End Workout Early flow. Worth a functional check, not just wording.
+  workout_exit_dialog_message:
+    status: android_only
+    android_key: workout_exit_dialog_message
+    android_text: Your progress will not be saved.
+  workout_exit_button:
+    status: android_only
+    android_key: workout_exit_button
+    android_text: Exit Workout
+  fail:
+    status: fixed
+    android_key: fail
+    ios_key: PyramidLoggingContent.FailedButton
+    text: FAIL
+    note: Unified 2026-08-29. Android's shared 'fail' resource already matched iOS's Pyramid button ('FAIL'),
+      but iOS's TrainingSetsGripsLoggingContent.FailButton and TrainingSetsMaxLoggingContent.FailButton
+      (see fail_grips/fail_max below) both said 'FAILED' — an iOS-internal inconsistency as well as a
+      cross-platform one. All three iOS keys now say 'FAIL'.
+  fail_grips:
+    status: fixed
+    android_key: fail
+    ios_key: TrainingSetsGripsLoggingContent.FailButton
+    text: FAIL
+    note: Unified 2026-08-29 — was 'FAILED'. See common_actions.fail.
+  fail_max:
+    status: fixed
+    android_key: fail
+    ios_key: TrainingSetsMaxLoggingContent.FailButton
+    text: FAIL
+    note: Unified 2026-08-29 — was 'FAILED'. See common_actions.fail.
+  success:
+    status: match
+    android_key: success
+    ios_key: TrainingSetsGripsLoggingContent.SuccessButton
+    text: SUCCESS
+    note: Shared across pyramid_workout.success_button, TrainingSetsGripsLoggingContent.SuccessButton,
+      TrainingSetsMaxLoggingContent.SuccessButton.
+  reps_label:
+    status: android_only
+    android_key: reps
+    android_text: Reps
+    note: 'iOS composes rep counts into full plural phrases (e.g. ''Target: %lld reps'') rather than using
+      a standalone bare ''Reps'' label.'
+  decrement_reps_accessibility:
+    status: diverges
+    android_key: decrement_reps_description
+    android_text: Decrement %1$s
+    ios_key: RepCounterControl.DecreaseRepsAccessibility
+    ios_text: Decrease reps
+    note: Easy future fix — 'Decrement' vs 'Decrease' say the same thing; not in this pass's approved
+      fix list.
+  increment_reps_accessibility:
+    status: diverges
+    android_key: increment_reps_description
+    android_text: Increment %1$s
+    ios_key: RepCounterControl.IncreaseRepsAccessibility
+    ios_text: Increase reps
+  ok:
+    status: android_only
+    android_key: ok
+    android_text: OK
+  loading:
+    status: android_only
+    android_key: loading
+    android_text: Loading…
+  finish_and_save:
+    status: match
+    android_key: finish_and_save
+    ios_key: WorkoutDayView.FinishSaveButton
+    text: FINISH & SAVE
+  end_workout_early:
+    status: match
+    android_key: end_workout_early
+    ios_key: WorkoutDayView.EndWorkoutEarlyButton
+    text: END WORKOUT EARLY
+  end_early_dialog_title:
+    status: match
+    android_key: end_early_dialog_title
+    ios_key: WorkoutDayView.EndWorkoutEarlyAlertTitle
+    text: End Workout Early?
+  end_early_dialog_message:
+    status: diverges
+    android_key: end_early_dialog_message
+    android_text: Your progress so far will be saved as a partial workout.
+    ios_key: WorkoutDayView.EndEarlyAlertMessage
+    ios_text: This saves your progress as a partial workout and moves you on to the next scheduled day.
+  end_early_dialog_confirm:
+    status: diverges
+    android_key: end_early_dialog_confirm
+    android_text: END EARLY
+    ios_key: WorkoutDayView.EndAndSaveButton
+    ios_text: End & Save
+common_phrases:
+  workout_complete_generic:
+    status: match_wording
+    android_key: workout_complete
+    android_text: Workout Complete!
+    ios_key: WorkoutDayView.WorkoutCompleteHeadline
+    ios_text: WORKOUT COMPLETE!
+    note: This is the LIVE shared string (used by WorkoutCompleteHero.kt across all 4 workout days). max_effort.complete_title,
+      pyramid_workout.complete_title, and training_sets_max.summary_title are dead duplicate copies of
+      this same text under per-day keys — de-duplication candidate, not done this pass.
+  workout_summary_generic:
+    status: android_only
+    android_key: workout_summary
+    android_text: Workout Summary
+    note: DEAD STRING — 0 usages found; also a duplicate of pyramid_workout.summary_label (also unverified/likely
+      dead).
+  workout_summary_closing:
+    status: diverges
+    android_key: workout_summary_closing
+    android_text: Great effort. Time to save your results.
+    ios_key: WorkoutDayView.FinishSaveHint
+    ios_text: Tap Finish & Save below to log today's session.
+    note: This is the LIVE shared 'time to save' string (3 usages). max_effort.complete_body ('Excellent
+      effort...') is also live (1 usage, likely Day-1-specific); max_training_summary_closing ('Great
+      work...') is dead.
+  reps_completed_prompt:
+    status: match
+    android_key: reps_completed_prompt
+    ios_key: PyramidLoggingContent.FailedSetBodyHint
+    text: Log your actual reps for this set
+    note: Duplicate of pyramid_workout.failed_set_body.
+  performance_summary_title:
+    status: android_only
+    android_key: performance_summary_title
+    android_text: Performance Summary
+    note: DEAD STRING — 0 usages found. Near-duplicate of training_sets_max.performance_summary_title
+      ('Performance:'), also dead.
+  confirm_training_set_title:
+    status: android_only
+    android_key: confirm_training_set_title
+    android_text: Confirm Training Set
+    note: DEAD STRING — 0 usages found. Near-duplicate of training_grips.input_reps_title ('Confirm Training
+      Reps'), also dead — verify what (if anything) currently shows on that confirm-reps screen.
+  confirm_and_start_button:
+    status: match_wording
+    android_key: confirm_and_start_button
+    android_text: Confirm and Start
+    ios_key: TrainingSetsMaxLoggingContent.ConfirmButton
+    ios_text: CONFIRM & START
+    note: Duplicate of training_grips.confirm_and_start.
+  training_set_goal_explanation:
+    status: android_only
+    android_key: training_set_goal_explanation
+    android_text: Do these many reps per set.
+  skipped_label:
+    status: match
+    android_key: skipped_label
+    ios_key: DayComparisonSheet.SkippedLabel
+    text: Skipped
+  not_logged:
+    status: match
+    android_key: not_logged
+    ios_key: WorkoutDayView.NotLoggedLabel
+    text: --
+  failed_set_how_many:
+    status: match
+    android_key: failed_set_how_many
+    ios_key: PyramidLoggingContent.HowManyPrompt
+    text: HOW MANY?
+    note: Duplicate of pyramid_workout.failed_set_prompt.
+  set_prefix_fragment:
+    status: android_only
+    android_key: set_
+    android_text: SET
+    note: Internal formatting fragment (non-breaking space suffix); iOS composes inline.
+  do_prefix_fragment:
+    status: android_only
+    android_key: do_
+    android_text: DO
+  rep_suffix_fragment:
+    status: android_only
+    android_key: _rep
+    android_text: DO
+    note: 'SUSPECTED BUG: this resource''s value is ''DO\u00A0'', identical to do_ above. Looks like a
+      copy-paste error (the key name ''_rep'' suggests it was meant to hold something rep-related, not
+      another ''DO '' fragment). Flagged, not changed — verify intended value and usage before editing.'
+rest_timer:
+  title:
+    status: match
+    android_key: rest_timer_title
+    ios_key: WorkoutDayView.RestLabel
+    text: REST
+  skip_button:
+    status: match
+    android_key: rest_timer_skip_button
+    ios_key: WorkoutDayView.SkipButton
+    text: Skip
+  correction_banner_logged:
+    status: diverges
+    android_key: set_correction_banner_logged
+    android_text: Logged %s
+    ios_key: WorkoutDayView.CorrectionLoggedRepsFormat
+    ios_text: 'PLURAL: ''Logged %lld rep.'' / ''Logged %lld reps.'''
+  correction_banner_undo:
+    status: match
+    android_key: set_correction_banner_undo
+    ios_key: WorkoutDayView.CorrectionUndoButton
+    text: Undo
+  correction_banner_dismiss:
+    status: match
+    android_key: set_correction_banner_dismiss
+    ios_key: WorkoutDayView.CorrectionDismissButton
+    text: Dismiss
+  live_activity_rest_label:
+    status: ios_only
+    text: Rest
+    note: RestTimerLiveActivity.RestLabel in the widget extension's own catalog — Android has no Live
+      Activity equivalent (different OS capability).
+detail_sheet:
+  title:
+    status: match
+    android_key: detail_sheet_title
+    android_text: 'Day %1$d: %2$s'
+    ios_key: DayDetailSheet.Title
+    ios_text: 'Day %lld: %@'
+  week:
+    status: match
+    android_key: detail_sheet_week
+    android_text: Week %1$d
+    ios_key: DayDetailSheet.Week
+    ios_text: Week %lld
+  status:
+    status: match
+    android_key: detail_sheet_status
+    ios_key: DayDetailSheet.Status
+    text: Status
+  duration:
+    status: android_only
+    android_key: detail_sheet_duration
+    android_text: Duration
+    note: 'DEAD STRING on Android too — grep confirms 0 usages in .kt source (same for duration_minutes_plural
+      below). CORRECTION: an earlier draft called the missing iOS ''Duration'' key a possible content
+      gap; that''s backwards — Android''s own detail sheet doesn''t currently show duration either, despite
+      the string existing.'
+  reps_per_set:
+    status: android_only
+    android_key: detail_sheet_reps_per_set
+    android_text: Reps per Set
+    note: DEAD STRING — 0 usages found in .kt source.
+  pyramid_peak:
+    status: match
+    android_key: detail_sheet_pyramid_peak
+    ios_key: DayDetailSheet.PyramidPeak
+    text: Pyramid Peak
+  failed_set_reps:
+    status: match
+    android_key: detail_sheet_failed_set_reps
+    ios_key: DayDetailSheet.FailedSetReps
+    text: Failed Set Reps
+  final_max_set:
+    status: match
+    android_key: detail_sheet_final_max_set
+    ios_key: DayDetailSheet.FinalMaxSet
+    text: Final Max Set
+  target_reps:
+    status: match
+    android_key: detail_sheet_target_reps
+    ios_key: DayDetailSheet.TargetReps
+    text: Target Reps
+  grip_summary:
+    status: android_only
+    android_key: detail_sheet_grip_summary
+    android_text: Grip Summary
+    note: DEAD STRING — 0 usages found in .kt source. (training_grips.summary_title below is a different,
+      actually-used Android string with a similar name — that one IS a real gap; this one is not.)
+  successful_sets:
+    status: match
+    android_key: detail_sheet_successful_sets
+    ios_key: DayDetailSheet.SuccessfulSets
+    text: Successful Sets
+  total_reps:
+    status: match
+    android_key: detail_sheet_total_reps
+    ios_key: DayDetailSheet.TotalReps
+    text: Total Reps
+  notes:
+    status: match
+    android_key: detail_sheet_notes
+    ios_key: DayDetailSheet.Notes
+    text: Notes
+  no_grip_details:
+    status: match
+    android_key: detail_sheet_no_grip_details
+    ios_key: DayDetailSheet.NoGripDetails
+    text: No grip details recorded.
+    note: Duplicate of comparison_sheet.no_grip_data.
+  cannot_read_grip_details:
+    status: android_only
+    android_key: detail_sheet_cannot_read_grip_details
+    android_text: Could not read grip details.
+  grip_display_format_passthrough:
+    status: android_only
+    android_key: detail_sheet_grip_display_format
+    android_text: '%1$s: %2$s'
+    note: 'Trivial passthrough format string (''%1$s: %2$s''), no real wording content.'
+  exercise_notes_format:
+    status: android_only
+    android_key: exercise_detail_notes_format
+    android_text: 'Notes: %1$s'
+    note: 'ADDED 2026-08-29 — replaces a hardcoded ''Notes: $it'' Text() call in DashboardScreen.kt (a
+      wording-audit finding). No iOS equivalent found for this exercise-detail notes display.'
+  duration_minutes_plural:
+    status: android_only
+    android_key: detail_sheet_duration_minutes
+    android_text:
+      one: '%d minute'
+      other: '%d minutes'
+    note: DEAD STRING — pairs with detail_sheet.duration above, also 0 usages.
+notifications:
+  timer_ongoing_title:
+    status: android_only
+    android_key: notification_timer_title
+    android_text: Resting…
+    note: iOS relies on a Live Activity (Dynamic Island / Lock Screen) for the ongoing rest countdown
+      rather than a periodic notification title — architectural difference, not a wording gap.
+  timer_finished_title:
+    status: match
+    android_key: notification_timer_finished_title
+    ios_key: WorkoutDayView.RestTimerNotificationTitle
+    text: Rest Over!
+  timer_finished_body:
+    status: diverges
+    android_key: notification_timer_finished_body
+    android_text: Time to start your next set!
+    ios_key: WorkoutDayView.RestTimerNotificationBody
+    ios_text: '%@ — time for your next set.'
+  open_app_action:
+    status: android_only
+    android_key: notification_open_app
+    android_text: Open App
+  seconds_left_plural:
+    status: android_only
+    android_key: notification_seconds_left
+    android_text:
+      one: '%d second left'
+      other: '%d seconds left'
+    note: No matching iOS notification string — the Live Activity likely renders its own countdown UI
+      instead of a text string.
+  log_success_action:
+    status: android_only
+    android_key: notification_action_log_success
+    android_text: '%1$d reps ✓'
+feedback:
+  new_program_started:
+    status: android_only
+    android_key: feedback_new_program_started
+    android_text: New program started!
+  migration_successful:
+    status: diverges
+    android_key: feedback_migration_successful
+    android_text: Migration successful! Welcome back.
+    ios_key: ImportCoordinator.ImportedCountSuccess
+    ios_text: 'PLURAL: ''Imported %lld workout.'' / ''Imported %lld workouts.'''
+    note: 'Different concept: Android gives a generic welcome-back message; iOS reports the exact imported
+      workout count. Renaming Android''s wording to ''Import successful...'' would fit the Migrate→Import
+      decision, but the underlying message content differs — flagged, not merged.'
+  migration_error_generic:
+    status: android_only
+    android_key: feedback_migration_error_generic
+    android_text: 'Error: Could not import data from the selected file.'
+    note: 'DEAD STRING — grep confirms no .kt file references R.string.feedback_migration_error_generic
+      (also flagged by `./gradlew lint`''s UnusedResources check). CORRECTION: an earlier draft of this
+      audit assumed this was Android''s one-and-only generic import error, used to claim Android''s error
+      handling was less granular than iOS''s. That was wrong — OnboardingViewModel.kt actually calls 5
+      other distinct, specific error strings (see migration_error_large_file/open_file/invalid_format/content_mismatch/corrupt
+      below and migration_failed_generic), comparable in granularity to iOS''s ImportCoordinator errors.
+      This particular string just isn''t one of the ones actually wired up.'
+  migration_error_large_file:
+    status: android_only
+    android_key: feedback_migration_error_large_file
+    android_text: 'Error: File is too large.'
+  migration_error_open_file:
+    status: diverges
+    android_key: feedback_migration_error_open_file
+    android_text: 'Error: Could not open file.'
+    ios_key: ImportCoordinator.FileReadError
+    ios_text: 'Couldn''t read the selected file: %@'
+  migration_error_invalid_format:
+    status: diverges
+    android_key: feedback_migration_error_invalid_format
+    android_text: 'Error: Invalid file format. Not a JSON array.'
+    ios_key: ImportCoordinator.InvalidJSONFormatError
+    ios_text: This file doesn't look like a valid PWA export (not a JSON array).
+  migration_error_content_mismatch:
+    status: diverges
+    android_key: feedback_migration_error_content_mismatch
+    android_text: 'Error: File content does not match expected format.'
+    ios_key: ImportCoordinator.UnrecognizedFormatError
+    ios_text: This file isn't a Rep Yourself or PWA export we recognize. Make sure you selected the right
+      file.
+  migration_error_corrupt:
+    status: diverges
+    android_key: feedback_migration_error_corrupt
+    android_text: 'Error: The file appears to be corrupt.'
+    ios_key: ImportCoordinator.CorruptedDataError
+    ios_text: Export file has corrupted entries at index(es) %@ — nothing was imported.
+  migration_failed_generic:
+    status: android_only
+    android_key: feedback_migration_failed_generic
+    android_text: Import failed. Please ensure you selected the correct file.
+    note: Actively used (OnboardingViewModel.kt) as the catch-all fallback when none of the more specific
+      migration_error_* cases match — not a dead duplicate.
+  export_error_creating_data:
+    status: diverges
+    android_key: feedback_export_error_creating_data
+    android_text: Error creating export data.
+    ios_key: SettingsView.ExportErrorTemplate
+    ios_text: 'Couldn''t export data: %@'
+  export_error_no_data:
+    status: android_only
+    android_key: feedback_export_error_no_data
+    android_text: 'Error: No data to save.'
+  export_success:
+    status: diverges
+    android_key: feedback_export_success
+    android_text: File saved successfully.
+    ios_key: SettingsView.ExportSuccessMessage
+    ios_text: Export saved.
+  export_error_saving:
+    status: diverges
+    android_key: feedback_export_error_saving
+    android_text: Error saving file.
+    ios_key: SettingsView.ExportErrorTemplate
+    ios_text: 'Couldn''t export data: %@'
+  workout_skipped:
+    status: diverges
+    android_key: feedback_workout_skipped
+    android_text: Workout skipped. Advanced to Week %1$d, Day %2$d
+    ios_key: DashboardView.SkipNote
+    ios_text: Workout skipped by user.
+    note: Possibly not comparable concepts — Android's is a user-facing snackbar naming the new week/day;
+      iOS's SkipNote may just be an internal note field, not a shown toast. Verify before treating as
+      a wording mismatch.
+  program_reset:
+    status: android_only
+    android_key: feedback_program_reset
+    android_text: Program has been reset.
+  program_reset_error:
+    status: android_only
+    android_key: feedback_program_reset_error
+    android_text: 'Error: Could not reset program.'
+  workout_saved_generic:
+    status: diverges
+    android_key: feedback_workout_saved_generic
+    android_text: Workout saved.
+    ios_key: WorkoutDayView.WorkoutSaved
+    ios_text: Workout Saved
+  workout_saved_partial_generic:
+    status: ios_only
+    ios_key: WorkoutDayView.WorkoutSavedPartial
+    text: Workout Saved (Partial)
+  workout_saved_day_specific:
+    status: android_only
+    note: 'CONTENT-RICHNESS GAP (verified against actual call sites, not just strings.xml): Android actively
+      uses ~11 specific save-confirmation strings surfacing the actual stat achieved — feedback_workout_saved_day1_detail=''Day
+      1 saved! Your new max is %1$s.'' (+ day1_shortened), feedback_workout_saved_day2_detail=''Day 2
+      saved! You peaked at %1$s.'' (+ day2_shortened), feedback_workout_saved_day3_perfect/_good_effort/_partial
+      (no plain day3_detail — Day 3 branches three ways), feedback_workout_saved_day4_detail=''Day 4 saved!
+      You completed %1$s.'' (+ day4_shortened), plus feedback_workout_saved_repeat/_repeat_shortened and
+      a feedback_workout_saved_generic fallback. iOS only has two generic strings regardless of day or
+      performance: WorkoutDayView.WorkoutSaved (''Workout Saved'') and WorkoutSavedPartial (''Workout
+      Saved (Partial)''). This is a real feature/content gap, not a simple wording mismatch — worth a
+      follow-up decision on whether iOS should adopt Android''s richer, stat-specific confirmations. (Note:
+      the plain, no-suffix feedback_workout_saved_day1/day2/day3/day4 keys are separately dead code —
+      0 usages found by grep — see dead_saved_day_keys below.)'
+  dead_saved_day_keys:
+    status: android_only
+    note: DEAD STRINGS — grep confirms feedback_workout_saved_day1, _day2, _day3, and _day3_shortened,
+      and _day4 (the bare, no-suffix/no-'_shortened' forms) have 0 references in any .kt file. Superseded
+      by the _detail/_shortened/_perfect/_good_effort/_partial variants noted above. Candidates for deletion;
+      left in place since deletion wasn't part of the approved scope.
+settings:
+  title:
+    status: match
+    android_key: settings_title
+    ios_key: SettingsView.Title
+    text: Settings
+  analytics_title:
+    status: match
+    android_key: settings_analytics_title
+    ios_key: SettingsView.AnalyticsToggleLabel
+    text: Share anonymous usage data
+  analytics_description:
+    status: match
+    android_key: settings_analytics_description
+    ios_key: SettingsView.AnalyticsToggleDescription
+    text: Help improve the app by sharing anonymous usage statistics and crash reports.
+  privacy_policy_title:
+    status: match
+    android_key: settings_privacy_policy_title
+    ios_key: SettingsView.PrivacyPolicyLink
+    text: Privacy Policy
+  privacy_policy_description:
+    status: android_only
+    android_key: settings_privacy_policy_description
+    android_text: View how your data is collected and used.
+  support_title:
+    status: match
+    android_key: settings_support_title
+    ios_key: SettingsView.SupportLink
+    text: Support
+  support_description:
+    status: android_only
+    android_key: settings_support_description
+    android_text: Get help or contact us with questions.
+  menu_item_reset_program:
+    status: match
+    android_key: settings_menu_item_reset_program
+    ios_key: SettingsView.ResetProgramButton
+    text: Reset Program
+    note: Duplicate of overview.reset_program_button.
+  theme_title:
+    status: match
+    android_key: settings_theme_title
+    ios_key: SettingsView.ThemeRowLabel
+    text: Theme
+  theme_dialog_title:
+    status: android_only
+    android_key: settings_theme_dialog_title
+    android_text: Choose theme
+  reset_program_title_long:
+    status: android_only
+    android_key: settings_reset_program_title
+    android_text: Reset entire program
+  reset_program_description:
+    status: match
+    android_key: settings_reset_program_description
+    ios_key: SettingsView.ResetProgramDescription
+    text: Permanently deletes all profile and workout data.
+  export_data_title:
+    status: diverges
+    android_key: settings_export_data_title
+    android_text: Export my data
+    ios_key: SettingsView.ExportDataButton
+    ios_text: Export Data
+  export_data_description:
+    status: diverges
+    android_key: settings_export_data_description
+    android_text: Save a copy of your profile and workout history.
+    ios_key: SettingsView.ExportDataDescription
+    ios_text: Save all your workout history and profile data as a JSON file.
+  done_button:
+    status: ios_only
+    ios_key: SettingsView.DoneButton
+    text: Done
+  appearance_section_header:
+    status: ios_only
+    ios_key: SettingsView.AppearanceSectionHeader
+    text: Appearance
+  danger_zone_section_header:
+    status: ios_only
+    ios_key: SettingsView.DangerZoneSectionHeader
+    text: Danger Zone
+  data_section_header:
+    status: ios_only
+    ios_key: SettingsView.DataSectionHeader
+    text: Data
+  privacy_section_header:
+    status: ios_only
+    ios_key: SettingsView.PrivacySectionHeader
+    text: Privacy
+rep_count_plurals:
+  only_text_rep:
+    status: android_only
+    android_key: only_text_rep
+    android_text:
+      one: REP
+      other: REPS
+    note: REP / REPS bare plural.
+  rep_count_caps:
+    status: android_only
+    android_key: rep_count_caps
+    android_text:
+      one: '%d REP'
+      other: '%d REPS'
+    note: '%d REP / %d REPS.'
+  rep_count:
+    status: android_only
+    android_key: rep_count
+    android_text:
+      one: '%d rep'
+      other: '%d reps'
+    note: '%d rep / %d reps — Android centralizes one reusable plural resource composed into many screens;
+      iOS''s String Catalog instead embeds an equivalent plural phrase inline per context (e.g. TargetRepsLabel,
+      HeroRepsSuffix, CorrectionLoggedRepsFormat) rather than one shared bare-plural resource. Architectural
+      difference worth knowing about, not a defect.'
+  modal_seconds_left:
+    status: android_only
+    android_key: modal_seconds_left
+    android_text:
+      one: second left
+      other: seconds left
+  seconds_left:
+    status: android_only
+    android_key: seconds_left
+    android_text:
+      one: '%d second left'
+      other: '%d seconds left'
+  grip_count:
+    status: android_only
+    android_key: grip_count
+    android_text:
+      one: '%d grip'
+      other: '%d grips'
+  set_count:
+    status: android_only
+    android_key: set_count
+    android_text:
+      one: '%d set'
+      other: '%d sets'
+  rep_value_only:
+    status: android_only
+    android_key: rep_value_only
+    android_text:
+      one: '%1$d'
+      other: '%1$d'
+    note: Trivial passthrough (%1$d in both plural forms); no real wording content.
+ios_only_program_detail:
+  note: ArmstrongProgramDay.* (12 keys) hold long descriptive program copy — MaxEffortDescription/ExerciseName/ExerciseNotes/ExerciseSetsAndReps/Title,
+    and equivalents for Pyramid/TrainingSetsGrips/TrainingSetsMax/Repeat — plus RepsSuffixKnown/RepsSuffixUnknown.
+    This looks like a program-detail/about screen or data model iOS built that Android may express purely
+    in code/UI rather than as string resources. Not catalogued 1:1 here; worth a closer look if this content
+    should exist on Android too.
+ios_only_contentview_review:
+  note: 'CONFIRMED DEAD CODE — grep for ''ContentView('' across all live iOS source (excluding build/)
+    finds zero instantiations; nothing in the app ever constructs this view. ContentView.* (7 keys: StartWorkoutMaxEffort/Pyramid/RepeatToughest/TrainingSetsGrips/TrainingSetsMax,
+    WorkoutHistoryTitle, ImportLegacyDataButton, FilePickerErrorTemplate) is template/placeholder UI left
+    over from an early build (phrasing like ''Start Workout: (Max Effort)'' with parentheses reads like
+    scaffolding, not shipped copy). Candidate for deleting ContentView.swift and its 7 catalog entries;
+    left in place since deletion wasn''t part of the approved scope — logged to gaps/ios.md.'
+ios_only_import_internals:
+  note: ImportCoordinator.* (WarningCountLabel, SaveFailedError, etc.), LegacyPwaMigrator.*, AndroidNativeMigrator.Day3GripParseWarning,
+    RepYourselfNativeMigrator.MissingProfileWarning are internal import-validation messages tied to iOS's
+    broader import feature (see import_file_dialog.reminder note on the Migrate→Import scope gap). No
+    Android equivalents catalogued since Android's import path doesn't handle native-format backups.
+ios_only_grip_enum_labels:
+  note: PullUpGrip.* (Close, Neutral, Other, Pronated, Supinated, Wide) are grip-name labels. Verify whether
+    Android exposes these same names as string resources somewhere not captured by this scan, or hardcodes
+    them in Kotlin — if hardcoded, that's the same 'no hardcoded strings' gap flagged for Android's own
+    SettingsScreen/DashboardScreen/OnboardingScreen literals.
+ios_only_theme_labels:
+  note: ThemePreference.Dark/Light/System — verify where Android's equivalent theme-option labels live;
+    not found in this strings.xml scan, so they may be hardcoded in Kotlin (SettingsScreen.kt) rather
+    than resourced.
+ios_only_rep_counter_control:
+  note: RepCounterControl.* (DoneButton='Done', PlaceholderZero='0') beyond the Decrease/IncreaseRepsAccessibility
+    pair already catalogued under common_actions.
+ios_only_correction_flow_detail:
+  note: WorkoutDayView.Correction* strings (CorrectionPickCorrectPrompt='Pick the correct number', CorrectionPickerEyebrowLabel='CORRECTING',
+    CorrectionSuccessLoggedRepsFormat) show a more elaborated 'fix a logged set' flow than Android's 3
+    generic set_correction_banner_* strings. Worth a UX-parity check, not just a wording one.
+ios_only_session_day_titles:
+  note: MaxEffortSession.DayTitle='Max Effort Sets', PyramidSession.DayTitle='Pyramid', TrainingSetsGripsSession.DayTitle='Training
+    Sets & Grips', TrainingSetsMaxSession.DayTitle='Max Training Sets' — per-day screen titles. Verify
+    whether Android's equivalent day names live in strings.xml under a different naming pattern, or are
+    hardcoded in ArmstrongWorkoutProgram/WorkoutType (data/model/ package) rather than resourced.
+ios_only_grips_max_extras:
+  note: 'TrainingSetsGripsLoggingContent.TargetRepsLabel and TrainingSetsMaxLoggingContent.TargetRepsLabel
+    (plural ''Target: %lld rep(s)'') relate to comparison_sheet.metric_target_reps/detail_sheet.target_reps
+    but as an inline plural phrase rather than a bare label — no direct Android string. TrainingSetsGripsSession.GripSlotPlaceholder=''Grip
+    %lld'' and TrainingSetsMaxLoggingContent.GoalRemainingLabel=''%lld MORE TO HIT GOAL'' have no Android
+    counterparts found. TrainingSetsMaxLoggingContent.ChangeTargetRepsButton=''Change Target'' is iOS''s
+    Day-4 copy of the same shared concept as common_actions-adjacent workout_change_target_reps_button/TrainingSetsGripsLoggingContent.ChangeTargetRepsButton
+    (already matched).'
+ios_only_misc:
+  note: 'Other iOS-only strings with no Android counterpart found: WorkoutDayView.DayTitleFormat/DayTitleRepeatFormat/HeroRepsSuffix/MaxPullUpsLabel/EndAndSaveButton,
+    RepeatToughestChoiceView extras already noted, RestTimerLiveActivity.RestLabel (widget target, no
+    Android Live Activity equivalent exists on that OS).'
