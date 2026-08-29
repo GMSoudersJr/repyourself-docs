@@ -67,17 +67,9 @@ onboarding:
     text: Import Previous Data
     note: 'Unified 2026-08-29. This is the actual rendered onboarding button (OnboardingScreen.kt:389);
       it previously said ''Restore or Migrate Data''. CORRECTION: the original audit assumed the visible
-      button was android_key `onboarding_restore_button` (''Migrate from PWA''), but that resource is
-      dead code — verified via grep that it''s never referenced in any .kt file. `onboarding_restore_button`''s
-      text was updated too for hygiene in case it''s revived, but it is NOT currently shown to users (see
-      import_button_unused below).'
-  import_button_unused:
-    status: android_only
-    android_key: onboarding_restore_button
-    android_text: Import Previous Data
-    note: DEAD STRING — grep confirms no Kotlin file references R.string.onboarding_restore_button; the
-      real onboarding import button uses onboarding_restore_or_migrate instead (see import_button above).
-      Candidate for deletion; left in place since deletion wasn't part of the approved scope.
+      button was android_key `onboarding_restore_button` (''Migrate from PWA''), but that resource was
+      dead code — verified via grep that it was never referenced in any .kt file. Removed from strings.xml
+      2026-08-29 (see gaps/android.md).'
   import_icon_description:
     status: android_only
     android_key: migrate_data_icon_content_description
@@ -101,13 +93,6 @@ import_file_dialog:
     status: android_only
     android_key: migrate_dialog_step2
     android_text: Look for and open the "Downloads" folder.
-  step3_unused:
-    status: android_only
-    android_key: migrate_dialog_step3
-    android_text: 'Find and tap the file:'
-    note: DEAD STRING — grep confirms `migrate_dialog_step3` is not referenced anywhere in Android Kotlin
-      source; only `migrate_dialog_step3_new` is used. Candidate for deletion; left in place since deletion
-      wasn't part of the approved scope.
   step3:
     status: diverges
     android_key: migrate_dialog_step3_new
@@ -416,12 +401,6 @@ max_effort:
     ios_text: SET %lld OF %lld
     note: Android hardcodes the total as literal '5'; iOS parametrizes both numbers. Same output today
       since Day 1 is always 5 sets on both platforms.
-  instructions_combined:
-    status: android_only
-    android_key: max_effort_instructions
-    android_text: Max-out! Rest 90 seconds between sets.
-    note: Possibly superseded by the separate max_out/push_to_failure strings below, which iOS mirrors
-      as two discrete strings — verify this combined string is still used in MaxEffortScreen.kt.
   max_out_headline:
     status: match
     android_key: max_out
@@ -432,24 +411,14 @@ max_effort:
     android_key: push_to_failure
     ios_key: MaxEffortLoggingContent.PushToFailureSubheadline
     text: Push to failure.
-  complete_title:
-    status: match_wording
-    android_key: max_effort_complete_title
-    android_text: Workout Complete!
-    ios_key: WorkoutDayView.WorkoutCompleteHeadline
-    ios_text: WORKOUT COMPLETE!
-    note: DEAD STRING on Android — grep confirms 0 usages. The live shared string for this concept is
-      `workout_complete` (used by WorkoutCompleteHero.kt across all 4 days), see common_phrases.workout_complete_generic.
-      This key, pyramid_workout_complete_title, and max_training_summary_title are all dead duplicates
-      of it.
   complete_body:
     status: diverges
     android_key: max_effort_complete_body
     android_text: Excellent effort. Time to save your results.
     ios_key: WorkoutDayView.FinishSaveHint
     ios_text: Tap Finish & Save below to log today's session.
-    note: Part of a family of near-duplicate Android 'time to save' strings (see max_training_summary_closing,
-      workout_summary_closing) that all map loosely to iOS's one FinishSaveHint.
+    note: Part of a family of near-duplicate Android 'time to save' strings (see workout_summary_closing)
+      that all map loosely to iOS's one FinishSaveHint.
 pyramid_workout:
   attempting_set:
     status: match
@@ -520,13 +489,6 @@ pyramid_workout:
     status: android_only
     android_key: pyramid_workout_summary_final_set
     android_text: 'Final Max Set: %1$s'
-  complete_title:
-    status: match_wording
-    android_key: pyramid_workout_complete_title
-    android_text: Workout Complete!
-    ios_key: WorkoutDayView.WorkoutCompleteHeadline
-    ios_text: WORKOUT COMPLETE!
-    note: DEAD STRING — see max_effort.complete_title's note; live one is `workout_complete`.
   summary_label:
     status: android_only
     android_key: pyramid_workout_summary_label
@@ -557,14 +519,6 @@ pyramid_workout:
     ios_key: WorkoutDayView.NotLoggedLabel
     text: --
 training_grips:
-  input_reps_title:
-    status: diverges
-    android_key: training_grips_input_reps_title
-    android_text: Confirm Training Reps
-    ios_key: TrainingSetsGripsLoggingContent.SetTargetLabel
-    ios_text: SET YOUR TARGET
-    note: DEAD STRING on Android — 0 usages found; the real live title for this concept, if any, is likely
-      training_set_setter_scream ('SET YOUR GOAL') instead. Not reconciled this pass.
   input_reps_body:
     status: diverges
     android_key: training_grips_input_reps_body
@@ -727,30 +681,10 @@ training_sets_max:
     android_text: How many reps did you complete?
     note: Near-duplicate of the HowManyPrompt concept just above ('did you complete?' vs 'did you get?')
       — likely redundant with log_failed_body's counterpart.
-  summary_title:
-    status: match_wording
-    android_key: max_training_summary_title
-    android_text: Workout Complete!
-    ios_key: WorkoutDayView.WorkoutCompleteHeadline
-    ios_text: WORKOUT COMPLETE!
-    note: DEAD STRING — see max_effort.complete_title's note; live one is `workout_complete`.
   summary_body:
     status: android_only
     android_key: max_training_summary_body
     android_text: You completed %1$s.
-  summary_closing:
-    status: diverges
-    android_key: max_training_summary_closing
-    android_text: Great work. Save your results.
-    ios_key: WorkoutDayView.FinishSaveHint
-    ios_text: Tap Finish & Save below to log today's session.
-    note: DEAD STRING — 0 usages found. The live shared 'time to save' string is workout_summary_closing
-      ('Great effort. Time to save your results.', 3 usages) — see common_phrases.workout_summary_closing.
-  performance_summary_title:
-    status: android_only
-    android_key: max_training_performance_summary_title
-    android_text: 'Performance:'
-    note: DEAD STRING — 0 usages found.
   performance_successful_sets:
     status: match
     android_key: max_training_performance_successful_sets
@@ -997,31 +931,6 @@ weekly_summary:
     status: android_only
     android_key: weekly_summary_successful_sets
     android_text: 'Successful Sets (Day 4):'
-  improvement_title:
-    status: android_only
-    android_key: weekly_summary_improvement_title
-    android_text: Day 5 Improvement
-    note: 'DEAD STRINGS — grep confirms weekly_summary_improvement_title and all 4 new_* rows below have
-      0 references in any .kt file. CORRECTION: an earlier draft of this audit called this a possible
-      iOS feature gap (''iOS may not show a Day 5 before/after comparison''); that was backwards — Android
-      itself doesn''t currently show this ''Day 5 Improvement'' section either, despite the strings being
-      defined. Not a cross-platform gap, just unused Android resources.'
-  new_max_rep_set:
-    status: android_only
-    android_key: weekly_summary_new_max_rep_set
-    android_text: 'New Max Rep Set:'
-  new_pyramid_peak:
-    status: android_only
-    android_key: weekly_summary_new_pyramid_peak
-    android_text: 'New Pyramid Peak:'
-  new_grips_sets:
-    status: android_only
-    android_key: weekly_summary_new_grips_sets
-    android_text: 'New Day 3 Sets:'
-  new_max_sets:
-    status: android_only
-    android_key: weekly_summary_new_max_sets
-    android_text: 'New Day 4 Sets:'
   all_skipped_title:
     status: match
     android_key: weekly_summary_all_skipped_title
@@ -1192,15 +1101,9 @@ common_phrases:
     android_text: Workout Complete!
     ios_key: WorkoutDayView.WorkoutCompleteHeadline
     ios_text: WORKOUT COMPLETE!
-    note: This is the LIVE shared string (used by WorkoutCompleteHero.kt across all 4 workout days). max_effort.complete_title,
-      pyramid_workout.complete_title, and training_sets_max.summary_title are dead duplicate copies of
-      this same text under per-day keys — de-duplication candidate, not done this pass.
-  workout_summary_generic:
-    status: android_only
-    android_key: workout_summary
-    android_text: Workout Summary
-    note: DEAD STRING — 0 usages found; also a duplicate of pyramid_workout.summary_label (also unverified/likely
-      dead).
+    note: This is the LIVE shared string (used by WorkoutCompleteHero.kt across all 4 workout days). Three
+      dead per-day duplicate keys of this same text (max_effort_complete_title, pyramid_workout_complete_title,
+      max_training_summary_title) were removed from strings.xml 2026-08-29 — see gaps/android.md.
   workout_summary_closing:
     status: diverges
     android_key: workout_summary_closing
@@ -1208,26 +1111,14 @@ common_phrases:
     ios_key: WorkoutDayView.FinishSaveHint
     ios_text: Tap Finish & Save below to log today's session.
     note: This is the LIVE shared 'time to save' string (3 usages). max_effort.complete_body ('Excellent
-      effort...') is also live (1 usage, likely Day-1-specific); max_training_summary_closing ('Great
-      work...') is dead.
+      effort...') is also live (1 usage, likely Day-1-specific); a dead duplicate (max_training_summary_closing,
+      'Great work...') was removed from strings.xml 2026-08-29 — see gaps/android.md.
   reps_completed_prompt:
     status: match
     android_key: reps_completed_prompt
     ios_key: PyramidLoggingContent.FailedSetBodyHint
     text: Log your actual reps for this set
     note: Duplicate of pyramid_workout.failed_set_body.
-  performance_summary_title:
-    status: android_only
-    android_key: performance_summary_title
-    android_text: Performance Summary
-    note: DEAD STRING — 0 usages found. Near-duplicate of training_sets_max.performance_summary_title
-      ('Performance:'), also dead.
-  confirm_training_set_title:
-    status: android_only
-    android_key: confirm_training_set_title
-    android_text: Confirm Training Set
-    note: DEAD STRING — 0 usages found. Near-duplicate of training_grips.input_reps_title ('Confirm Training
-      Reps'), also dead — verify what (if anything) currently shows on that confirm-reps screen.
   confirm_and_start_button:
     status: match_wording
     android_key: confirm_and_start_button
@@ -1264,13 +1155,6 @@ common_phrases:
     status: android_only
     android_key: do_
     android_text: DO
-  rep_suffix_fragment:
-    status: android_only
-    android_key: _rep
-    android_text: DO
-    note: 'SUSPECTED BUG: this resource''s value is ''DO\u00A0'', identical to do_ above. Looks like a
-      copy-paste error (the key name ''_rep'' suggests it was meant to hold something rep-related, not
-      another ''DO '' fragment). Flagged, not changed — verify intended value and usage before editing.'
 rest_timer:
   title:
     status: match
@@ -1321,19 +1205,6 @@ detail_sheet:
     android_key: detail_sheet_status
     ios_key: DayDetailSheet.Status
     text: Status
-  duration:
-    status: android_only
-    android_key: detail_sheet_duration
-    android_text: Duration
-    note: 'DEAD STRING on Android too — grep confirms 0 usages in .kt source (same for duration_minutes_plural
-      below). CORRECTION: an earlier draft called the missing iOS ''Duration'' key a possible content
-      gap; that''s backwards — Android''s own detail sheet doesn''t currently show duration either, despite
-      the string existing.'
-  reps_per_set:
-    status: android_only
-    android_key: detail_sheet_reps_per_set
-    android_text: Reps per Set
-    note: DEAD STRING — 0 usages found in .kt source.
   pyramid_peak:
     status: match
     android_key: detail_sheet_pyramid_peak
@@ -1354,12 +1225,6 @@ detail_sheet:
     android_key: detail_sheet_target_reps
     ios_key: DayDetailSheet.TargetReps
     text: Target Reps
-  grip_summary:
-    status: android_only
-    android_key: detail_sheet_grip_summary
-    android_text: Grip Summary
-    note: DEAD STRING — 0 usages found in .kt source. (training_grips.summary_title below is a different,
-      actually-used Android string with a similar name — that one IS a real gap; this one is not.)
   successful_sets:
     status: match
     android_key: detail_sheet_successful_sets
@@ -1396,13 +1261,6 @@ detail_sheet:
     android_text: 'Notes: %1$s'
     note: 'ADDED 2026-08-29 — replaces a hardcoded ''Notes: $it'' Text() call in DashboardScreen.kt (a
       wording-audit finding). No iOS equivalent found for this exercise-detail notes display.'
-  duration_minutes_plural:
-    status: android_only
-    android_key: detail_sheet_duration_minutes
-    android_text:
-      one: '%d minute'
-      other: '%d minutes'
-    note: DEAD STRING — pairs with detail_sheet.duration above, also 0 usages.
 notifications:
   timer_ongoing_title:
     status: android_only
@@ -1451,17 +1309,6 @@ feedback:
     note: 'Different concept: Android gives a generic welcome-back message; iOS reports the exact imported
       workout count. Renaming Android''s wording to ''Import successful...'' would fit the Migrate→Import
       decision, but the underlying message content differs — flagged, not merged.'
-  migration_error_generic:
-    status: android_only
-    android_key: feedback_migration_error_generic
-    android_text: 'Error: Could not import data from the selected file.'
-    note: 'DEAD STRING — grep confirms no .kt file references R.string.feedback_migration_error_generic
-      (also flagged by `./gradlew lint`''s UnusedResources check). CORRECTION: an earlier draft of this
-      audit assumed this was Android''s one-and-only generic import error, used to claim Android''s error
-      handling was less granular than iOS''s. That was wrong — OnboardingViewModel.kt actually calls 5
-      other distinct, specific error strings (see migration_error_large_file/open_file/invalid_format/content_mismatch/corrupt
-      below and migration_failed_generic), comparable in granularity to iOS''s ImportCoordinator errors.
-      This particular string just isn''t one of the ones actually wired up.'
   migration_error_large_file:
     status: android_only
     android_key: feedback_migration_error_large_file
@@ -1558,14 +1405,8 @@ feedback:
       performance: WorkoutDayView.WorkoutSaved (''Workout Saved'') and WorkoutSavedPartial (''Workout
       Saved (Partial)''). This is a real feature/content gap, not a simple wording mismatch — worth a
       follow-up decision on whether iOS should adopt Android''s richer, stat-specific confirmations. (Note:
-      the plain, no-suffix feedback_workout_saved_day1/day2/day3/day4 keys are separately dead code —
-      0 usages found by grep — see dead_saved_day_keys below.)'
-  dead_saved_day_keys:
-    status: android_only
-    note: DEAD STRINGS — grep confirms feedback_workout_saved_day1, _day2, _day3, and _day3_shortened,
-      and _day4 (the bare, no-suffix/no-'_shortened' forms) have 0 references in any .kt file. Superseded
-      by the _detail/_shortened/_perfect/_good_effort/_partial variants noted above. Candidates for deletion;
-      left in place since deletion wasn't part of the approved scope.
+      the plain, no-suffix feedback_workout_saved_day1/day2/day3/day4 keys were separately dead code —
+      removed from strings.xml 2026-08-29, see gaps/android.md.)'
 settings:
   title:
     status: match

@@ -181,7 +181,7 @@ Verified via `compileDebugKotlin compileReleaseKotlin`, `testDebugUnitTest`, `li
 
 ---
 
-### [Open] strings.xml has a fair amount of dead/duplicate string cruft, found during a cross-platform wording audit
+### [Resolved] strings.xml has a fair amount of dead/duplicate string cruft, found during a cross-platform wording audit
 Found while: building `wording.yaml` (repo root), a cross-platform wording source-of-truth comparing Android's `strings.xml` against iOS's `Localizable.xcstrings`, 2026-08-29. Not part of the audit's original ask — surfaced incidentally while grep-verifying which strings are actually live before pairing them with iOS equivalents.
 Details: several `strings.xml` entries that read as plausible "the app must show this somewhere" candidates turned out, on `grep -rl "<key>" android/app/src/main/java --include="*.kt"`, to have zero references anywhere in Kotlin source:
 - `migrate_dialog_step3` (superseded by `migrate_dialog_step3_new`, which is the one actually wired up in `OnboardingScreen.kt`)
@@ -193,3 +193,7 @@ Details: several `strings.xml` entries that read as plausible "the app must show
 - `workout_summary` (bare), `performance_summary_title`, `max_training_performance_summary_title`, `confirm_training_set_title`, `training_grips_input_reps_title`, `feedback_migration_error_generic`, and the bare (no-suffix) `feedback_workout_saved_day1`/`_day2`/`_day3`/`_day3_shortened`/`_day4` are also all unreferenced
 
 Not something a wording audit should fix on its own initiative — several of these look like leftovers from UI iterations where a screen's copy changed and the old resource was never deleted, not always safe to assume which of two near-duplicates is "the real one" without also checking what's currently rendered. Full inventory (with cross-references to which live string, if any, supersedes each dead one) is in `wording.yaml` at the repo root, tagged "DEAD STRING" per entry.
+
+Resolved: 2026-08-29. Re-verified every claimed-dead key by grepping `android/app/src/main/java/**/*.kt`, all of `android/app/src/main/res/**` (XML resources), and `AndroidManifest.xml` — zero discrepancies, all ~28 individual `<string>`/`<plurals>` entries across the groups listed above really are dead, and there are no translated locale directories to mirror the cleanup into (only `values/` and `values-night/`, the latter has no `strings.xml`). Deleted all 28 from `android/app/src/main/res/values/strings.xml` on `android` branch `remove-dead-duplicate-strings` (not yet merged). Verified via `./gradlew compileDebugKotlin compileReleaseKotlin` (BUILD SUCCESSFUL) and `./gradlew lint` (10 pre-existing errors, same baseline, none new).
+
+The corresponding "DEAD STRING" rows/notes in root `wording.yaml` were removed (not just re-tagged) on the root repo's own branch `resolve-dead-strings-gap`, including tightening `max_effort.instructions_combined`'s previously-hedged "verify" note now that grep confirms it's genuinely dead. Neither branch has been merged to `main` yet — left for review.
