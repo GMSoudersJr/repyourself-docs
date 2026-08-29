@@ -37,7 +37,7 @@ Details: <description of the gap>
 ```
 Mark `[Resolved]` rather than deleting once addressed, so there's a record of what got fixed and when.
 
-## Git workflow (applies in every repo — android/, web/, ios/)
+## Git workflow (applies in every repo — the root repo, android/, web/, ios/)
 
 - **Never commit directly to `main`.** Always create a branch first.
 - **Branch names describe the work**, not a ticket number or generic label — e.g. `fix-streak-calculation`, `add-exercise-history-chart`, not `bugfix` or `patch-1`.
