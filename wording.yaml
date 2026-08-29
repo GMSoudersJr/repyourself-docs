@@ -1559,13 +1559,6 @@ ios_only_program_detail:
     This looks like a program-detail/about screen or data model iOS built that Android may express purely
     in code/UI rather than as string resources. Not catalogued 1:1 here; worth a closer look if this content
     should exist on Android too.
-ios_only_contentview_review:
-  note: 'CONFIRMED DEAD CODE — grep for ''ContentView('' across all live iOS source (excluding build/)
-    finds zero instantiations; nothing in the app ever constructs this view. ContentView.* (7 keys: StartWorkoutMaxEffort/Pyramid/RepeatToughest/TrainingSetsGrips/TrainingSetsMax,
-    WorkoutHistoryTitle, ImportLegacyDataButton, FilePickerErrorTemplate) is template/placeholder UI left
-    over from an early build (phrasing like ''Start Workout: (Max Effort)'' with parentheses reads like
-    scaffolding, not shipped copy). Candidate for deleting ContentView.swift and its 7 catalog entries;
-    left in place since deletion wasn''t part of the approved scope — logged to gaps/ios.md.'
 ios_only_import_internals:
   note: ImportCoordinator.* (WarningCountLabel, SaveFailedError, etc.), LegacyPwaMigrator.*, AndroidNativeMigrator.Day3GripParseWarning,
     RepYourselfNativeMigrator.MissingProfileWarning are internal import-validation messages tied to iOS's
