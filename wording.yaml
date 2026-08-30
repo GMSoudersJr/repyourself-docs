@@ -77,12 +77,12 @@ onboarding:
     note: Renamed from 'Migrate data' for terminology consistency; no iOS counterpart string found.
 import_file_dialog:
   title:
-    status: diverges
+    status: fixed
     android_key: migrate_dialog_title
-    android_text: How to Find Your File
+    android_text: Find Your File
     ios_key: OnboardingView.ImportInstructionsTitle
     ios_text: Find Your File
-    note: Not reconciled this pass — flagged for a future wording pass.
+    note: Unified 2026-08-29 — was 'How to Find Your File'.
   step1:
     status: android_only
     android_key: migrate_dialog_step1
@@ -142,12 +142,12 @@ import_file_dialog:
       matching the capability that already exists. Not fully identical to iOS''s phrasing (Android''s
       stays close to its own dialog''s step-by-step voice).'
   confirm_button:
-    status: diverges
+    status: fixed
     android_key: migrate_dialog_confirm_button
-    android_text: Got It, Open Files
+    android_text: Continue
     ios_key: OnboardingView.ImportInstructionsConfirmButton
     ios_text: Continue
-    note: Not reconciled this pass — flagged for a future wording pass.
+    note: Unified 2026-08-29 — was 'Got It, Open Files'.
   cancel_button:
     status: ios_only
     ios_key: OnboardingView.ImportInstructionsCancelButton
@@ -326,11 +326,12 @@ overview:
     note: Android's body includes an extra reassurance sentence ('Your theme and notification settings
       will be kept.') that iOS's omits. Worth considering adding to iOS, not done this pass.
   reset_confirm_button:
-    status: diverges
+    status: fixed
     android_key: overview_card_confirm_reset
-    android_text: Yes, Reset
+    android_text: Reset
     ios_key: SettingsView.ResetConfirmationConfirm
     ios_text: Reset
+    note: Unified 2026-08-29 — was 'Yes, Reset'.
   history_by_week:
     status: android_only
     android_key: overview_card_history_by_week
@@ -532,11 +533,12 @@ training_grips:
     ios_key: TrainingSetsGripsLoggingContent.ConfirmButton
     ios_text: CONFIRM & START
   select_grip_title:
-    status: diverges
+    status: fixed
     android_key: training_grips_select_grip_title
-    android_text: GRIP SELECTION
+    android_text: Pick a Grip
     ios_key: TrainingSetsGripsLoggingContent.SelectGripTitle
     ios_text: Pick a Grip
+    note: Unified 2026-08-29 — was 'GRIP SELECTION'.
   three_more:
     status: match
     android_key: select_first_grip_title
@@ -697,19 +699,14 @@ training_sets_max:
     ios_key: DayComparisonSheet.MaxTrainingFailedReps
     text: Final Reps
     note: iOS also holds this same value under TrainingSetsMaxSession.FailedSetLabel for the in-session
-      summary.
+      summary. A dead duplicate android_key, comparison_metric_failed_reps ('Failed Reps', unreferenced
+      in any .kt file), was removed from strings.xml 2026-08-29 — see gaps/android.md.
   performance_not_logged:
     status: match
     android_key: max_training_performance_not_logged
     ios_key: WorkoutDayView.NotLoggedLabel
     text: --
 repeat_toughest:
-  day_title:
-    status: diverges
-    android_key: repeat_toughest_day_title
-    android_text: Select the workout you found the most difficult this week.
-    ios_key: RepeatToughestChoiceView.Header
-    ios_text: Pick the day you found hardest this week
   day_button_label:
     status: diverges
     android_key: repeat_toughest_day_button_label
@@ -726,18 +723,22 @@ repeat_toughest:
     ios_key: RepeatToughestChoiceView.Eyebrow
     text: DAY 5 PREP
   scream:
-    status: diverges
+    status: fixed
     android_key: repeat_toughest_day_scream
-    android_text: WHICH WAS TOUGHEST?
+    android_text: WHICH DAY WAS TOUGHEST?
     ios_key: RepeatToughestChoiceView.Headline
     ios_text: WHICH DAY WAS TOUGHEST?
+    note: Unified 2026-08-29 — was 'WHICH WAS TOUGHEST?'.
   sub_instruction:
-    status: diverges
+    status: fixed
     android_key: repeat_toughest_day_sub_instruction
-    android_text: Select the workout you found the most difficult this week
+    android_text: Pick the day you found hardest this week
     ios_key: RepeatToughestChoiceView.Header
     ios_text: Pick the day you found hardest this week
-    note: Near-duplicate of repeat_toughest.day_title within Android itself.
+    note: 'Unified 2026-08-29 — was ''Select the workout you found the most difficult this week''.
+      Its near-duplicate sibling android_key, repeat_toughest_day_title (same wording, same ios_key,
+      but never actually rendered), was confirmed dead via grep and deleted from strings.xml in the
+      same pass — see gaps/android.md.'
   day_button_variants:
     status: ios_only
     note: 'iOS keys: RepeatToughestChoiceView.RepeatMaxEffort=''Repeat Day 1: Max Effort Sets'', RepeatPyramid=''Repeat
@@ -826,12 +827,6 @@ comparison_sheet:
     android_key: comparison_no_grip_data
     ios_key: DayDetailSheet.NoGripDetails
     text: No grip details recorded.
-  metric_failed_reps:
-    status: diverges
-    android_key: comparison_metric_failed_reps
-    android_text: Failed Reps
-    ios_key: DayComparisonSheet.MaxTrainingFailedReps
-    ios_text: Final Reps
   pyramid_descend_label:
     status: match
     ios_key: DayComparisonSheet.PyramidDescend
@@ -957,11 +952,11 @@ training_set_setter:
     android_key: training_set_setter_context_label
     android_text: TRAINING SET PREP
   goal_scream:
-    status: diverges
+    status: fixed
     android_key: training_set_setter_scream
-    android_text: SET YOUR GOAL
-    note: iOS's per-screen equivalent (TrainingSetsGripsLoggingContent.SetTargetLabel / TrainingSetsMaxLoggingContent.SetTargetLabel)
-      says 'SET YOUR TARGET' — GOAL vs TARGET wording differs. Not reconciled.
+    android_text: SET YOUR TARGET
+    note: Unified 2026-08-29 — was 'SET YOUR GOAL'. Now matches iOS's per-screen equivalent (TrainingSetsGripsLoggingContent.SetTargetLabel
+      / TrainingSetsMaxLoggingContent.SetTargetLabel), 'SET YOUR TARGET' — see set_target_label below.
   sub_day3:
     status: diverges
     android_key: training_set_setter_sub_day3
@@ -981,10 +976,10 @@ training_set_setter:
     note: Closest iOS equivalent at this step is ConfirmButton ('CONFIRM & START'); no separate 'START
       WORKOUT'-only button found.
   set_target_label:
-    status: ios_only
+    status: match
     text: SET YOUR TARGET
     note: Shared value of TrainingSetsGripsLoggingContent.SetTargetLabel and TrainingSetsMaxLoggingContent.SetTargetLabel;
-      see goal_scream note above.
+      see goal_scream above, which now says the same thing (android_key training_set_setter_scream).
 common_actions:
   cancel:
     status: match
@@ -1046,19 +1041,20 @@ common_actions:
     note: 'iOS composes rep counts into full plural phrases (e.g. ''Target: %lld reps'') rather than using
       a standalone bare ''Reps'' label.'
   decrement_reps_accessibility:
-    status: diverges
+    status: fixed
     android_key: decrement_reps_description
-    android_text: Decrement %1$s
+    android_text: Decrease %1$s
     ios_key: RepCounterControl.DecreaseRepsAccessibility
     ios_text: Decrease reps
-    note: Easy future fix — 'Decrement' vs 'Decrease' say the same thing; not in this pass's approved
-      fix list.
+    note: Unified 2026-08-29 — was 'Decrement %1$s'. Composes as 'Decrease Reps' at every current call
+      site (InteractiveRepsInput.kt's label param always resolves to R.string.reps).
   increment_reps_accessibility:
-    status: diverges
+    status: fixed
     android_key: increment_reps_description
-    android_text: Increment %1$s
+    android_text: Increase %1$s
     ios_key: RepCounterControl.IncreaseRepsAccessibility
     ios_text: Increase reps
+    note: Unified 2026-08-29 — was 'Increment %1$s'. See decrement_reps_accessibility.
   ok:
     status: android_only
     android_key: ok
@@ -1355,11 +1351,12 @@ feedback:
     android_key: feedback_export_error_no_data
     android_text: 'Error: No data to save.'
   export_success:
-    status: diverges
+    status: fixed
     android_key: feedback_export_success
-    android_text: File saved successfully.
+    android_text: Export saved.
     ios_key: SettingsView.ExportSuccessMessage
     ios_text: Export saved.
+    note: Unified 2026-08-29 — was 'File saved successfully.'.
   export_error_saving:
     status: diverges
     android_key: feedback_export_error_saving
@@ -1384,11 +1381,12 @@ feedback:
     android_key: feedback_program_reset_error
     android_text: 'Error: Could not reset program.'
   workout_saved_generic:
-    status: diverges
+    status: fixed
     android_key: feedback_workout_saved_generic
-    android_text: Workout saved.
+    android_text: Workout Saved
     ios_key: WorkoutDayView.WorkoutSaved
     ios_text: Workout Saved
+    note: Unified 2026-08-29 — was 'Workout saved.' (lowercase, trailing period).
   workout_saved_partial_generic:
     status: ios_only
     ios_key: WorkoutDayView.WorkoutSavedPartial
@@ -1466,11 +1464,12 @@ settings:
     ios_key: SettingsView.ResetProgramDescription
     text: Permanently deletes all profile and workout data.
   export_data_title:
-    status: diverges
+    status: fixed
     android_key: settings_export_data_title
-    android_text: Export my data
+    android_text: Export Data
     ios_key: SettingsView.ExportDataButton
     ios_text: Export Data
+    note: Unified 2026-08-29 — was 'Export my data'.
   export_data_description:
     status: diverges
     android_key: settings_export_data_description
