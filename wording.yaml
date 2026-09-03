@@ -989,23 +989,37 @@ common_actions:
     note: 'Shared across many iOS keys: OnboardingView.ImportInstructionsCancelButton, WorkoutDayView.CancelButton,
       RepCounterControl.DoneButton uses ''Done'' not ''Cancel'' (separate concept).'
   navigate_back_accessibility:
-    status: android_only
+    status: diverges
     android_key: navigate_back
     android_text: Navigate back
+    ios_key: WorkoutDayView.BackButtonAccessibilityLabel
+    ios_text: Back
+    note: Added to iOS 2026-09-03 (branch add-leave-workout-confirmation matching Android's discard pattern) —
+      same meaning, shorter iOS phrasing; left as-is, not a wording bug.
   workout_exit_dialog_title:
-    status: android_only
+    status: fixed
     android_key: workout_exit_dialog_title
-    android_text: Leave Workout?
-    note: No iOS 'Leave Workout?' dialog found — iOS may allow navigating back mid-workout without a confirmation,
-      relying only on the End Workout Early flow. Worth a functional check, not just wording.
+    ios_key: WorkoutDayView.LeaveWorkoutAlertTitle
+    text: Leave Workout?
+    note: The 'No iOS Leave Workout? dialog found' gap this entry used to flag is resolved — iOS now blocks
+      swipe-back and confirms via the back button once anything is logged, added 2026-09-03. See
+      gaps/ios.md's session-reconstruction-bug entry in ios/CLAUDE.md §9 for the functional-check follow-up
+      this note asked for.
   workout_exit_dialog_message:
-    status: android_only
+    status: fixed
     android_key: workout_exit_dialog_message
-    android_text: Your progress will not be saved.
+    ios_key: WorkoutDayView.LeaveWorkoutAlertMessage
+    text: Your progress will not be saved.
+    note: Added to iOS 2026-09-03, verbatim match with Android's existing text.
   workout_exit_button:
-    status: android_only
+    status: diverges
     android_key: workout_exit_button
     android_text: Exit Workout
+    ios_key: WorkoutDayView.LeaveButton
+    ios_text: Leave
+    note: Added to iOS 2026-09-03. Deliberately not unified with Android's 'Exit Workout' — 'Leave' matches
+      the alert's own title ('Leave Workout?') and iOS's shorter button-label convention elsewhere in this
+      file; worth a future call on whether to sync wording, not done as part of this pass.
   fail:
     status: fixed
     android_key: fail
