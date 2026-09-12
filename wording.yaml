@@ -1305,6 +1305,17 @@ notifications:
     status: android_only
     android_key: notification_action_log_success
     android_text: '%1$d reps ✓'
+  workout_reminder_title:
+    status: ios_only
+    ios_key: WorkoutReminder.NotificationTitle
+    text: Time to Work Out
+    note: New 2026-09-12 (branch add-workout-reminder-feature) — the actual scheduled local-notification
+      content for the opt-in reminder feature (see settings.reminder_section_header). No Android equivalent
+      exists yet.
+  workout_reminder_body:
+    status: ios_only
+    ios_key: WorkoutReminder.NotificationBody
+    text: It's one of your workout days — tap to get started.
 feedback:
   new_program_started:
     status: android_only
@@ -1510,6 +1521,35 @@ settings:
     status: ios_only
     ios_key: SettingsView.PrivacySectionHeader
     text: Privacy
+  reminder_section_header:
+    status: ios_only
+    ios_key: SettingsView.ReminderSectionHeader
+    text: Reminders
+    note: 'New 2026-09-12 (branch add-workout-reminder-feature) — Android has no equivalent reminder
+      feature (see gaps/android.md), so this whole reminder_* group is ios_only. Opt-in only, configured
+      entirely from this Settings section; nothing elsewhere in the app enables it automatically.'
+  reminder_toggle_label:
+    status: ios_only
+    ios_key: SettingsView.ReminderToggleLabel
+    text: Workout Reminder
+  reminder_toggle_description:
+    status: ios_only
+    ios_key: SettingsView.ReminderToggleDescription
+    text: Get a notification on your workout days if you haven't logged a workout yet.
+  reminder_first_day_label:
+    status: ios_only
+    ios_key: SettingsView.ReminderFirstDayLabel
+    text: First Day
+  reminder_time_label:
+    status: ios_only
+    ios_key: SettingsView.ReminderTimeLabel
+    text: Time
+  reminder_days_footer_format:
+    status: ios_only
+    ios_key: SettingsView.ReminderDaysFooterFormat
+    ios_text: 'The other 4 days are set automatically — reminds you %@–%@.'
+    note: The user picks one "first day" weekday; the other 4 consecutive weekdays are always auto-derived
+      (Notifications/ReminderSchedule.swift) — no day-chip multi-select UI exists or is planned.
 rep_count_plurals:
   only_text_rep:
     status: android_only
