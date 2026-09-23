@@ -260,3 +260,17 @@ That wasn't the original plan. Mid-implementation, iOS tried a "zero-friction" a
 - Every value (toggle state, first day, time) survived backgrounding and app relaunch correctly.
 
 Still not exercised: the permanently-denied-permission deep-link notice (would need denying the system prompt twice), and a genuine device reboot (only force-stop was tested, not `adb reboot`) — both low-risk relative to what's now proven, but worth a quick pass before merging if convenient. No bugs found; ready for review/merge as far as this feature's own behavior is concerned.
+
+### [Open] Firebase Analytics likely collects the Android Advertising ID — iOS just removed its IDFA equivalent
+Found while: prepping iOS's App Store submission (2026-09-23, `ios` branch `switch-to-firebase-analytics-core`). iOS found that the Firebase 12.x `FirebaseAnalytics` SPM product links `GoogleAppMeasurementIdentitySupport` (IDFA) and `GoogleAdsOnDeviceConversion` (Google Ads), even though `ios/CLAUDE.md` described the setup as "no ads/IDFA, matching Android's footprint." iOS switched to `FirebaseAnalyticsCore` to drop both.
+Details: Android uses `firebase-analytics-ktx` via `firebase-bom` 33.1.0 (`gradle/libs.versions.toml`). `app/src/main/AndroidManifest.xml` has neither:
+- `<meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />`
+- `<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />`
+
+By default, Firebase Analytics on Android merges in the AD_ID permission (via `play-services-ads-identifier`) and collects the Advertising ID. So Android probably has the same "ads/IDFA" footprint iOS just removed. Not yet verified: check the merged manifest (`app/build/intermediates/merged_manifests/…/AndroidManifest.xml`, or Android Studio's Merged Manifest tab) for the AD_ID permission first.
+
+Suggested fix, if confirmed: add both lines above. Neither needs code changes, and events and the "Share anonymous usage data" opt-out keep working. Then:
+- Re-check Play Console's Data safety answers. Device or other IDs, App interactions, Diagnostics and Approximate location are the Android equivalents of iOS's 5 nutrition-label types. The Advertising ID declaration and "Does your app use advertising ID?" answer in Play Console's App content would change to No.
+- Update the privacy policy wording together with the matching open entry in `gaps/web.md`.
+
+Also worth noting for the pending dependency-upgrade plan: `-ktx` Firebase artifacts were removed from the BOM starting in 34.0.0, so a BOM bump will also need `firebase-analytics-ktx` → `firebase-analytics` (the KTX APIs moved into the main module).
