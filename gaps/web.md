@@ -71,3 +71,7 @@ Resolved: 2026-09-23, `web` branch `update-privacy-policy-for-app-store`. Checke
 - Last Updated is now September 23rd, 2026.
 
 Follow-up: once `gaps/android.md`'s "Firebase Analytics likely collects the Android Advertising ID" entry is fixed, simplify the policy's Advertising Identifier bullet to "neither app collects an advertising identifier" and bump Last Updated again.
+
+### [Open] Privacy policy can now say neither app collects an advertising identifier
+Found while: resolving `gaps/android.md`'s Advertising ID entry (2026-10-15, `android` branch `remove-advertising-id-collection`).
+Details: Android now strips `AD_ID` and the Privacy Sandbox ad permissions and disables Firebase's ad ID collection, so neither mobile app collects an advertising identifier. This is the follow-up from the resolved Firebase privacy-policy entry above: in `src/components/privacy/PrivacyPolicy.tsx`, simplify the per-platform Advertising Identifier bullet (currently "Android may collect, analytics only, resettable in Settings → Privacy → Ads") to "neither app collects an advertising identifier," then bump Last Updated. **Wait until Android versionCode 3 or later is live for testers/users.** Older Android builds still collect it.

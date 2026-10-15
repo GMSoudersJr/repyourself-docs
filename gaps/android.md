@@ -261,7 +261,7 @@ That wasn't the original plan. Mid-implementation, iOS tried a "zero-friction" a
 
 Still not exercised: the permanently-denied-permission deep-link notice (would need denying the system prompt twice), and a genuine device reboot (only force-stop was tested, not `adb reboot`) — both low-risk relative to what's now proven, but worth a quick pass before merging if convenient. No bugs found; ready for review/merge as far as this feature's own behavior is concerned.
 
-### [Open] Firebase Analytics likely collects the Android Advertising ID — iOS just removed its IDFA equivalent
+### [Resolved] Firebase Analytics likely collects the Android Advertising ID — iOS just removed its IDFA equivalent
 Found while: prepping iOS's App Store submission (2026-09-23, `ios` branch `switch-to-firebase-analytics-core`). iOS found that the Firebase 12.x `FirebaseAnalytics` SPM product links `GoogleAppMeasurementIdentitySupport` (IDFA) and `GoogleAdsOnDeviceConversion` (Google Ads), even though `ios/CLAUDE.md` described the setup as "no ads/IDFA, matching Android's footprint." iOS switched to `FirebaseAnalyticsCore` to drop both.
 Details: Android uses `firebase-analytics-ktx` via `firebase-bom` 33.1.0 (`gradle/libs.versions.toml`). `app/src/main/AndroidManifest.xml` has neither:
 - `<meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />`
@@ -274,3 +274,5 @@ Suggested fix, if confirmed: add both lines above. Neither needs code changes, a
 - Update the privacy policy wording together with the matching open entry in `gaps/web.md`.
 
 Also worth noting for the pending dependency-upgrade plan: `-ktx` Firebase artifacts were removed from the BOM starting in 34.0.0, so a BOM bump will also need `firebase-analytics-ktx` → `firebase-analytics` (the KTX APIs moved into the main module).
+
+Resolved: 2026-10-15, `android` branch `remove-advertising-id-collection`. Confirmed from the merged release manifest: `play-services-measurement-api:22.0.1` added `AD_ID` **plus** the Privacy Sandbox `ACCESS_ADSERVICES_AD_ID` and `ACCESS_ADSERVICES_ATTRIBUTION` permissions. `AndroidManifest.xml` now removes all three with `tools:node="remove"` and sets `google_analytics_adid_collection_enabled` to `false`. Verified: the merger report shows all three REJECTED, `aapt2 dump permissions` on the release APK lists none of them, and unit tests plus `assembleRelease` pass. On-device (Pixel 7 Pro, debug build versionCode 3): all 38 instrumented tests pass, `dumpsys package` lists no AD_ID/ADSERVICES permissions, and with `debug.firebase.analytics.app` set, events still log (`screen_view`) while the outgoing payload's `resettable_device_id` (the Advertising ID field) is empty. The same branch bumps versionCode to 3, since 2 is already on internal testing. Still manual in Play Console: App content → Advertising ID → **No**, and drop any Advertising ID from Data safety. The privacy policy follow-up is logged in `gaps/web.md`.
